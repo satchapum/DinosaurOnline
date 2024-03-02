@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
@@ -18,6 +18,9 @@ public class PlayerControllerScript : NetworkBehaviour
     private Rigidbody rb;
     private bool running;
 
+    [SerializeField] Collider normalCollider;
+    [SerializeField] Collider halfCollider;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +30,7 @@ public class PlayerControllerScript : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         isGrounded = true;
         running = false;
+        halfCollider.enabled = false;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -75,6 +79,11 @@ public class PlayerControllerScript : NetworkBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
+    void Crouch()
+    {
+        normalCollider.enabled = false;
+        halfCollider.enabled = true;
+    }
 
     private void FixedUpdate()
     {
@@ -88,5 +97,19 @@ public class PlayerControllerScript : NetworkBehaviour
         {
             Jump();
         }
+
+        if (IsOwnedByServer)
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                Debug.Log("ย่อย่อ");
+                Crouch();
+                return;
+            } 
+        }
+
+        normalCollider.enabled = true;
+        halfCollider.enabled = false;
+
     }
 }
