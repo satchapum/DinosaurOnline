@@ -8,8 +8,6 @@ using Unity.Collections;
 
 public class MainPlayerScript : NetworkBehaviour
 {
-    public float speed = 5.0f;
-    public float rotationSpeed = 10.0f;
     Rigidbody rb;
     public TMP_Text namePrefab;
     private TMP_Text nameLabel;

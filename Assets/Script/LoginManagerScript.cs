@@ -22,6 +22,10 @@ public class LoginManagerScript : MonoBehaviour
     public GameObject scorePanel;
     //public GameObject changeStatusButton;
 
+    public bool isTwoPlayerSpawning = false;
+    public bool hostJoinning = false;
+    public bool clientJoinning = false;
+
     [Header("SpawnPos")]
     [SerializeField] Transform[] posList;
 
@@ -110,6 +114,9 @@ public class LoginManagerScript : MonoBehaviour
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartHost();
         roomID = int.Parse(roomIdInputField.GetComponent<TMP_InputField>().text);
+
+        hostJoinning = true;
+
         Debug.Log("Room id is: " + roomID);
         Debug.Log("Start host");
     }
@@ -246,7 +253,13 @@ public class LoginManagerScript : MonoBehaviour
         response.Position = spawnPos;
         response.Rotation = spawnRot;
     }
+    private void Update()
+    {
+        if ()
+        {
 
+        }
+    }
     public void Client()
     {
         string username = userNameInputField.GetComponent<TMP_InputField>().text;

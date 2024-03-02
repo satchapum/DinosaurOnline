@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class GroundMoveScript : MonoBehaviour
+public class GroundMoveScript : NetworkBehaviour
 {
     [SerializeField] GameObject ground_1;
     [SerializeField] GameObject ground_2;
@@ -19,16 +20,23 @@ public class GroundMoveScript : MonoBehaviour
     }
     void FixedUpdate()
     {
-        rbGround_1.MovePosition(rbGround_1.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
-        rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
+        if ()
+        {
+            rbGround_1.MovePosition(rbGround_1.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
+            rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
 
-        if (ground_1.transform.position == new Vector3(-70,0,0))
-        {
-            gameObject.transform.position = new Vector3(70, 0, 0);
-        }
-        else if(ground_2.transform.position == new Vector3(-70, 0, 0))
-        {
-            gameObject.transform.position = new Vector3(70, 0, 0);
+            Vector3 positionToOut = new Vector3(-120, 0, 7.1f);
+            Vector3 positionToReset_1 = new Vector3(ground_2.transform.position.x + 115f, 0, 7.1f);
+            Vector3 positionToReset_2 = new Vector3(ground_1.transform.position.x + 115f, 0, 7.1f);
+
+            if (ground_1.transform.position.x <= positionToOut.x)
+            {
+                ground_1.transform.position = positionToReset_1;
+            }
+            else if (ground_2.transform.position.x <= positionToOut.x)
+            {
+                ground_2.transform.position = positionToReset_2;
+            }
         }
     }
 }

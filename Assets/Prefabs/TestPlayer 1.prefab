@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6382427801030304647}
   - component: {fileID: -7841502852562450572}
   - component: {fileID: -5185405745831027033}
+  - component: {fileID: -1155235117755367516}
   m_Layer: 0
   m_Name: TestPlayer 1
   m_TagString: Untagged
@@ -150,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2837047235
+  GlobalObjectIdHash: 1277177020
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -242,3 +243,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: -7841502852562450572}
+--- !u!114 &-1155235117755367516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521542742648395849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89875e3414569584da08ee03a1a0c78d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 5
+  rotationSpeed: 10
+  jumpForce: 5
+  isGrounded: 0
+  groundCollider: {fileID: 0}
