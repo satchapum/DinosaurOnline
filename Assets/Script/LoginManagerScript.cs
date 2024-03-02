@@ -22,12 +22,14 @@ public class LoginManagerScript : NetworkBehaviour
     public GameObject scorePanel;
     //public GameObject changeStatusButton;
 
-    public NetworkVariable<bool> isTwoPlayerSpawning = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    public bool isTwoPlayerSpawning = false;
 
     [Header("SpawnPos")]
     [SerializeField] Transform[] posList;
 
     [SerializeField] public List<Material> materialList;
+
+    [SerializeField] GameObject[] playerList;
 
     private void Start()
     {
@@ -35,6 +37,21 @@ public class LoginManagerScript : NetworkBehaviour
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
         SetUIVisible(false);
+    }
+    private void Update()
+    {
+        playerList = GameObject.FindGameObjectsWithTag("Player");
+        if (IsOwnedByServer)
+        {
+            if (playerList.Length == 1)
+            {
+                StopGroundMoveServerRPC();
+            }
+            else
+            {
+                StarGroundMoveServerRPC();
+            }
+        }
     }
 
     public void SetUIVisible(bool isUserLogin)
@@ -63,10 +80,9 @@ public class LoginManagerScript : NetworkBehaviour
     }
     public void Leave()
     {
+
         if (NetworkManager.Singleton.IsClient)
         {
-            StopGroundMoveServerRPC();
-            isTwoPlayerSpawning.Value = false;
             NetworkManager.Singleton.Shutdown();
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
 
@@ -74,8 +90,7 @@ public class LoginManagerScript : NetworkBehaviour
 
         else if (NetworkManager.Singleton.IsHost)
         {
-            StopGroundMoveServerRPC();
-            isTwoPlayerSpawning.Value = false;
+
             NetworkManager.Singleton.Shutdown();
         }
 
@@ -207,11 +222,6 @@ public class LoginManagerScript : NetworkBehaviour
         NetworkLog.LogInfoServer("SpanwnPos of " + clientId + " is " + response.Position.ToString());
         NetworkLog.LogInfoServer("SpanwnRot of " + clientId + " is " + response.Rotation.ToString());
 
-        if (clientId > 0)
-        {
-            StarGroundMoveServerRPC();
-        }
-
         // If response.Approved is false, you can provide a message that explains the reason why via ConnectionApprovalResponse.Reason
         // On the client-side, NetworkManager.DisconnectReason will be populated with this message via DisconnectReasonMessage
         response.Reason = "Some reason for not approving the client";
@@ -257,13 +267,13 @@ public class LoginManagerScript : NetworkBehaviour
     [ServerRpc]
     public void StarGroundMoveServerRPC()
     {
-        isTwoPlayerSpawning.Value = true;
+        isTwoPlayerSpawning = true;
     }
 
     [ServerRpc]
     public void StopGroundMoveServerRPC()
     {
-        isTwoPlayerSpawning.Value = false;
+        isTwoPlayerSpawning = false;
     }
 
     public bool NameApproveConnection(string clientData, string hostData)
