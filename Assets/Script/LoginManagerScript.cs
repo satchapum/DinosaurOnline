@@ -38,21 +38,6 @@ public class LoginManagerScript : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnect;
         SetUIVisible(false);
     }
-    private void Update()
-    {
-        playerList = GameObject.FindGameObjectsWithTag("Player");
-        if (IsOwnedByServer)
-        {
-            if (playerList.Length == 1)
-            {
-                StopGroundMoveServerRPC();
-            }
-            else
-            {
-                StarGroundMoveServerRPC();
-            }
-        }
-    }
 
     public void SetUIVisible(bool isUserLogin)
     {
@@ -218,7 +203,7 @@ public class LoginManagerScript : NetworkBehaviour
 
         response.Rotation = Quaternion.identity;
 
-        SetSpawnLocation(clientId, response);
+        SetSpawnLocation(clientId, response, characterPrefabIndex);
         NetworkLog.LogInfoServer("SpanwnPos of " + clientId + " is " + response.Position.ToString());
         NetworkLog.LogInfoServer("SpanwnRot of " + clientId + " is " + response.Rotation.ToString());
 
@@ -231,7 +216,7 @@ public class LoginManagerScript : NetworkBehaviour
         response.Pending = false;
     }
 
-    private void SetSpawnLocation(ulong clientId, NetworkManager.ConnectionApprovalResponse response)
+    private void SetSpawnLocation(ulong clientId, NetworkManager.ConnectionApprovalResponse response, int characterPrefabIndex)
     {
         Vector3 spawnPos = Vector3.zero;
         Quaternion spawnRot = Quaternion.identity;
@@ -239,14 +224,29 @@ public class LoginManagerScript : NetworkBehaviour
         if(clientId == NetworkManager.Singleton.LocalClientId)
         {
             int countOfAllPos = posList.Length;
-            spawnPos = new Vector3(posList[0].position.x, posList[0].position.y, posList[0].position.z);
-            spawnRot = Quaternion.Euler(posList[0].eulerAngles.x, posList[0].eulerAngles.y, posList[0].eulerAngles.z);
+            if (characterPrefabIndex == 0)
+            {
+                spawnPos = new Vector3(posList[0].position.x, posList[0].position.y, posList[0].position.z);
+                spawnRot = Quaternion.Euler(posList[0].eulerAngles.x, posList[0].eulerAngles.y, posList[0].eulerAngles.z);
+            }
+            else if (characterPrefabIndex == 1)
+            {
+                spawnPos = new Vector3(posList[1].position.x, posList[1].position.y, posList[1].position.z);
+                spawnRot = Quaternion.Euler(posList[1].eulerAngles.x, posList[1].eulerAngles.y, posList[1].eulerAngles.z);
+            }
         }
         else
         {
-            int countOfAllPos = posList.Length;
-            spawnPos = new Vector3(posList[1].position.x, posList[1].position.y, posList[1].position.z);
-            spawnRot = Quaternion.Euler(posList[1].eulerAngles.x, posList[1].eulerAngles.y, posList[1].eulerAngles.z);
+            if (characterPrefabIndex == 0)
+            {
+                spawnPos = new Vector3(posList[0].position.x, posList[0].position.y, posList[0].position.z);
+                spawnRot = Quaternion.Euler(posList[0].eulerAngles.x, posList[0].eulerAngles.y, posList[0].eulerAngles.z);
+            }
+            else if (characterPrefabIndex == 1)
+            {
+                spawnPos = new Vector3(posList[1].position.x, posList[1].position.y, posList[1].position.z);
+                spawnRot = Quaternion.Euler(posList[1].eulerAngles.x, posList[1].eulerAngles.y, posList[1].eulerAngles.z);
+            }
         }
         response.Position = spawnPos;
         response.Rotation = spawnRot;
@@ -295,5 +295,20 @@ public class LoginManagerScript : NetworkBehaviour
             return 1;
         }
         return 0;
+    }
+    private void FixedUpdate()
+    {
+        playerList = GameObject.FindGameObjectsWithTag("Player");
+        if (IsHost)
+        {
+            if (playerList.Length <= 1)
+            {
+                StopGroundMoveServerRPC();
+            }
+            else if (playerList.Length == 2)
+            {
+                StarGroundMoveServerRPC();
+            }
+        }
     }
 }

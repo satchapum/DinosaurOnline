@@ -11,19 +11,13 @@ public class HPPlayerScript : NetworkBehaviour
     private OwnerNetworkAnimationScript ownerNetworkAnimationScript;
 
     TMP_Text p1Text;
-    TMP_Text p2Text;
     MainPlayerScript mainPlayer;
     public NetworkVariable<int> hpP1 = new NetworkVariable<int>(5,
     NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    public NetworkVariable<int> hpP2 = new NetworkVariable<int>(5,
-    NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
-    // Start is called before the first frame update
     void Start()
     {
         p1Text = GameObject.Find("player_1Text").GetComponent<TMP_Text>();
-        p2Text = GameObject.Find("player_2Text").GetComponent<TMP_Text>();
         ownerNetworkAnimationScript = GetComponent<OwnerNetworkAnimationScript>();
         mainPlayer = GetComponent<MainPlayerScript>();
     }
@@ -33,10 +27,6 @@ public class HPPlayerScript : NetworkBehaviour
         if (IsOwnedByServer)
         {
             p1Text.text = $"{mainPlayer.playerNameA.Value} : {hpP1.Value}";
-        }
-        else
-        {
-            p2Text.text = $"{mainPlayer.playerNameB.Value} : {hpP2.Value}";
         }
     }
 
@@ -56,12 +46,6 @@ public class HPPlayerScript : NetworkBehaviour
             gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
 
         }
-        else if (hpP2.Value == 0 && IsClient)
-        {
-            ownerNetworkAnimationScript.SetTrigger("Die");
-            hpP2.Value = 5;
-            gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
-        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -74,10 +58,6 @@ public class HPPlayerScript : NetworkBehaviour
             {
                 hpP1.Value--;
             }
-            else
-            {
-                hpP2.Value--;
-            }
             gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
         }
         if (collision.gameObject.tag == "Bomb")
@@ -86,20 +66,12 @@ public class HPPlayerScript : NetworkBehaviour
             {
                 hpP1.Value--;
             }
-            else
-            {
-                hpP2.Value--;
-            }
         }
         if (collision.gameObject.tag == "Bullet")
         {
             if (IsOwnedByServer)
             {
                 hpP1.Value--;
-            }
-            else
-            {
-                hpP2.Value--;
             }
         }
         UpdateScore();

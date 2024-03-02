@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: -7841502852562450572}
   - component: {fileID: -5185405745831027033}
   - component: {fileID: 250039091766894964}
+  - component: {fileID: 8171118260226511426}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Player
@@ -282,3 +283,19 @@ MonoBehaviour:
   groundGroupCollider: {fileID: 0}
   normalCollider: {fileID: 6414671145788479100}
   halfCollider: {fileID: 7024933986231841957}
+--- !u!114 &8171118260226511426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521542742648395849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 123fa0350caa29a44ad9a491da21f33a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpP1:
+    m_InternalValue: 5
+  hpP2:
+    m_InternalValue: 5

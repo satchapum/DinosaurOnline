@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: -7841502852562450572}
   - component: {fileID: -5185405745831027033}
   - component: {fileID: -1155235117755367516}
+  - component: {fileID: 3402299698747836737}
   m_Layer: 0
   m_Name: TestGod
   m_TagString: Player
@@ -151,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2837047235
+  GlobalObjectIdHash: 1277177020
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -258,3 +259,26 @@ MonoBehaviour:
   jumpForce: 5
   isGrounded: 0
   groundGroupCollider: {fileID: 0}
+  normalCollider: {fileID: 6414671145788479100}
+  halfCollider: {fileID: 3402299698747836737}
+--- !u!65 &3402299698747836737
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521542742648395849}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

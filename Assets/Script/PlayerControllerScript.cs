@@ -98,14 +98,10 @@ public class PlayerControllerScript : NetworkBehaviour
             Jump();
         }
 
-        if (IsOwnedByServer)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                Debug.Log("ย่อย่อ");
-                Crouch();
-                return;
-            } 
+            Crouch();
+            return;
         }
 
         normalCollider.enabled = true;
