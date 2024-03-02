@@ -28,8 +28,8 @@ public class GroundMoveScript : NetworkBehaviour
             rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
 
             Vector3 positionToOut = new Vector3(-120, 0, 7.1f);
-            Vector3 positionToReset_1 = new Vector3(ground_2.transform.position.x + 115f, 0, 7.1f);
-            Vector3 positionToReset_2 = new Vector3(ground_1.transform.position.x + 115f, 0, 7.1f);
+            Vector3 positionToReset_1 = new Vector3(ground_2.transform.position.x + 115f, -0.5f, 7.1f);
+            Vector3 positionToReset_2 = new Vector3(ground_1.transform.position.x + 115f, -0.5f, 7.1f);
 
             if (ground_1.transform.position.x <= positionToOut.x)
             {

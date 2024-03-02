@@ -12,8 +12,7 @@ public class PlayerControllerScript : NetworkBehaviour
     public float jumpForce = 5f;
 
     public bool isGrounded;
-    public Collider groundCollider_1;
-    public Collider groundCollider_2;
+    public Collider groundGroupCollider;
 
     private Animator animator;
     private Rigidbody rb;
@@ -22,10 +21,8 @@ public class PlayerControllerScript : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject groundObject_1 = GameObject.Find("Ground_1");
-        GameObject groundObject_2 = GameObject.Find("Ground_2");
-        groundCollider_1 = groundObject_1.GetComponent<Collider>();
-        groundCollider_2 = groundObject_2.GetComponent<Collider>();
+        GameObject groundGroup = GameObject.Find("GroundGroup");
+        groundGroupCollider = groundGroup.GetComponent<Collider>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         isGrounded = true;
@@ -34,7 +31,7 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider == groundCollider_1 || collision.collider == groundCollider_2)
+        if (collision.collider == groundGroupCollider)
         {
             isGrounded = true;
             animator.SetBool("Jump", false);
@@ -43,7 +40,7 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        if (collision.collider == groundCollider_1 || collision.collider == groundCollider_2)
+        if (collision.collider == groundGroupCollider)
         {
             isGrounded = false;
         }
@@ -51,23 +48,18 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void moveForward()
     {
-        float verticalInput = Input.GetAxis("Vertical");
-        if (Mathf.Abs(verticalInput) > 0.01f)
-        {
-            // move forward only
-            if (verticalInput > 0.01f)
-            {
-                float translation = verticalInput * speed;
-                translation *= Time.fixedDeltaTime;
-                rb.MovePosition(rb.position + this.transform.forward * translation);
+        float verticalInput = Input.GetAxis("Horizontal");
 
-                if (!running)
-                {
-                    running = true;
-                    animator.SetBool("Running", true);
-                }
-            }
+        float translation = verticalInput * speed;
+        translation *= Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + this.transform.forward * translation);
+
+        if (!running)
+        {
+            running = true;
+            animator.SetBool("Running", true);
         }
+
         else if (running)
         {
             running = false;
@@ -86,14 +78,15 @@ public class PlayerControllerScript : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOwner) return;
+        moveForward();
+    }
 
+    private void Update()
+    {
+        if (!IsOwner) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
-
-        moveForward();
-        
     }
 }
