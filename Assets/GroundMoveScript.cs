@@ -8,6 +8,8 @@ public class GroundMoveScript : NetworkBehaviour
     [SerializeField] GameObject ground_1;
     [SerializeField] GameObject ground_2;
 
+    [SerializeField] LoginManagerScript loginManager;
+
     [SerializeField] float speed;
 
     private Rigidbody rbGround_1;
@@ -20,7 +22,7 @@ public class GroundMoveScript : NetworkBehaviour
     }
     void FixedUpdate()
     {
-        if ()
+        if (loginManager.isTwoPlayerSpawning.Value)
         {
             rbGround_1.MovePosition(rbGround_1.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
             rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);

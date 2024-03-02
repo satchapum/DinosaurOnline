@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: -1155235117755367516}
   m_Layer: 0
   m_Name: TestPlayer 1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,7 +137,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 114
   m_CollisionDetection: 0
 --- !u!114 &3759353892708583264
 MonoBehaviour:
@@ -172,9 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6780cb65380ad3d40a93673df9870002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  rotationSpeed: 10
-  namePrefab: {fileID: 0}
+  namePrefab: {fileID: 1053716087881325711, guid: 0672c25c042c9e746b10186f09d35c4f, type: 3}
   isRedMat:
     m_InternalValue: 0
 --- !u!114 &6382427801030304647
@@ -259,4 +257,5 @@ MonoBehaviour:
   rotationSpeed: 10
   jumpForce: 5
   isGrounded: 0
-  groundCollider: {fileID: 0}
+  groundCollider_1: {fileID: 0}
+  groundCollider_2: {fileID: 0}

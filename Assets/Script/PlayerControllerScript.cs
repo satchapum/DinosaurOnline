@@ -12,7 +12,8 @@ public class PlayerControllerScript : NetworkBehaviour
     public float jumpForce = 5f;
 
     public bool isGrounded;
-    public Collider groundCollider;
+    public Collider groundCollider_1;
+    public Collider groundCollider_2;
 
     private Animator animator;
     private Rigidbody rb;
@@ -21,8 +22,10 @@ public class PlayerControllerScript : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GameObject groundObject = GameObject.Find("Ground");
-        groundCollider = groundObject.GetComponent<Collider>();
+        GameObject groundObject_1 = GameObject.Find("Ground_1");
+        GameObject groundObject_2 = GameObject.Find("Ground_2");
+        groundCollider_1 = groundObject_1.GetComponent<Collider>();
+        groundCollider_2 = groundObject_2.GetComponent<Collider>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
         isGrounded = true;
@@ -31,7 +34,7 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider == groundCollider)
+        if (collision.collider == groundCollider_1 || collision.collider == groundCollider_2)
         {
             isGrounded = true;
             animator.SetBool("Jump", false);
@@ -40,7 +43,7 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        if (collision.collider == groundCollider)
+        if (collision.collider == groundCollider_1 || collision.collider == groundCollider_2)
         {
             isGrounded = false;
         }
@@ -72,21 +75,6 @@ public class PlayerControllerScript : NetworkBehaviour
         }
     }
 
-    void turn()
-    {
-        float rotation = Input.GetAxis("Horizontal");
-        if (rotation != 0)
-        {
-            rotation *= rotationSpeed;
-            Quaternion turn = Quaternion.Euler(0f, rotation, 0f);
-            rb.MoveRotation(rb.rotation * turn);
-        }
-        else
-        {
-            rb.angularVelocity = Vector3.zero;
-        }
-    }
-
     void Jump()
     {
         if (isGrounded)
@@ -106,8 +94,6 @@ public class PlayerControllerScript : NetworkBehaviour
         }
 
         moveForward();
-        turn();
-
         
     }
 }

@@ -65,17 +65,6 @@ public class MainPlayerScript : NetworkBehaviour
         {
             Debug.Log("Owner ID = " + OwnerClientId + " : pos X = " + posX.Value);
         };
-        /*if (IsServer)
-        {
-            playerNameA.Value = new NetworkString() { info = new FixedString32Bytes(name.text) };
-            playerNameB.Value = new NetworkString() { info = new FixedString32Bytes(name.text) };
-        }*/
-        if (IsOwner)
-        {
-            GameObject button = GameObject.FindWithTag("buttonChangeStatus");
-            changeStatusButton = button.GetComponent<Button>();
-            changeStatusButton.onClick.AddListener(ChangeMatColor);
-        }
 
         if (IsOwner)
         {
@@ -88,7 +77,6 @@ public class MainPlayerScript : NetworkBehaviour
             }
         }
     }
-    // Start is called before the first frame update
 
     private void Update()
     {
@@ -169,33 +157,7 @@ public class MainPlayerScript : NetworkBehaviour
 
     void Start()
     {
-        /*if (IsOwner)
-        {
-            colorToChange.Add(colorToAdd[0]);
-            colorToChange.Add(colorToAdd[1]);
-        }*/
         rb = this.GetComponent<Rigidbody>();
-    }
-    private void FixedUpdate()
-    {
-        /*if (IsOwner)
-        {
-            float translation = Input.GetAxis("Vertical") * speed;
-            translation *= Time.deltaTime;
-            rb.MovePosition(rb.position + this.transform.forward * translation);
-
-            float rotation = Input.GetAxis("Horizontal");
-            if (rotation != 0)
-            {
-                rotation *= rotationSpeed;
-                Quaternion turn = Quaternion.Euler(0f, rotation, 0f);
-                rb.MoveRotation(rb.rotation * turn);
-            }
-            else
-            {
-                rb.angularVelocity = Vector3.zero;
-            }
-        }*/
     }
 
     private void OnEnable()

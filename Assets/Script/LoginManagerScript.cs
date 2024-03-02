@@ -8,7 +8,7 @@ using Unity.Mathematics;
 using Newtonsoft.Json.Bson;
 
 
-public class LoginManagerScript : MonoBehaviour
+public class LoginManagerScript : NetworkBehaviour
 {
     public List<uint> AlternativePlayerPrefabs;
     public TMP_Dropdown dropdown_TMP;
@@ -22,16 +22,12 @@ public class LoginManagerScript : MonoBehaviour
     public GameObject scorePanel;
     //public GameObject changeStatusButton;
 
-    public bool isTwoPlayerSpawning = false;
-    public bool hostJoinning = false;
-    public bool clientJoinning = false;
+    public NetworkVariable<bool> isTwoPlayerSpawning = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [Header("SpawnPos")]
     [SerializeField] Transform[] posList;
 
     [SerializeField] public List<Material> materialList;
-
-    public int roomID;
 
     private void Start()
     {
@@ -69,6 +65,8 @@ public class LoginManagerScript : MonoBehaviour
     {
         if (NetworkManager.Singleton.IsClient)
         {
+            StopGroundMoveServerRPC();
+            isTwoPlayerSpawning.Value = false;
             NetworkManager.Singleton.Shutdown();
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
 
@@ -76,6 +74,8 @@ public class LoginManagerScript : MonoBehaviour
 
         else if (NetworkManager.Singleton.IsHost)
         {
+            StopGroundMoveServerRPC();
+            isTwoPlayerSpawning.Value = false;
             NetworkManager.Singleton.Shutdown();
         }
 
@@ -113,12 +113,6 @@ public class LoginManagerScript : MonoBehaviour
     {
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartHost();
-        roomID = int.Parse(roomIdInputField.GetComponent<TMP_InputField>().text);
-
-        hostJoinning = true;
-
-        Debug.Log("Room id is: " + roomID);
-        Debug.Log("Start host");
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
@@ -134,7 +128,6 @@ public class LoginManagerScript : MonoBehaviour
         int characterPrefabIndex = 0;
 
         bool nameCheck = false;
-        bool roomIDCheck = false;
         if (byteLength > 0)
         {
             string combinedString = System.Text.Encoding.ASCII.GetString(connectionData,0,byteLength);
@@ -142,7 +135,6 @@ public class LoginManagerScript : MonoBehaviour
 
             string hostData = userNameInputField.GetComponent<TMP_InputField>().text;
             nameCheck = NameApproveConnection(extractedString[0], hostData);
-            roomIDCheck = RoomIDApproveConnection(extractedString[2]);
 
             for (int i = 0; i < extractedString.Length; i++)
             {
@@ -150,16 +142,16 @@ public class LoginManagerScript : MonoBehaviour
                 {
                     string clientData = extractedString[i];
                     isApprove = NameApproveConnection(clientData, hostData);
-                    if ((nameCheck == true) && (roomIDCheck == true))
+                    if (nameCheck == true)
                     {
                         isApprove = true;
                     }
-                    else if ((nameCheck == false) && (roomIDCheck == false))
+                    else if (nameCheck == false)
                     {
                         isApprove = false;
                         Debug.Log("Name is use alr && Room id is not correct");
                     }
-                    else if ((nameCheck == false) || (roomIDCheck == false))
+                    else if (nameCheck == false)
                     {
                         if (nameCheck == false)
                         {
@@ -188,6 +180,11 @@ public class LoginManagerScript : MonoBehaviour
                 string characterId = setInputSkinData().ToString();
                 characterPrefabIndex = int.Parse(characterId);
             }
+            else
+            {
+                string characterId = setInputSkinData().ToString();
+                characterPrefabIndex = int.Parse(characterId);
+            }
         }
         // Your approval logic determines the following values
         response.Approved = isApprove;
@@ -197,6 +194,7 @@ public class LoginManagerScript : MonoBehaviour
         //response.PlayerPrefabHash = null;
 
         response.PlayerPrefabHash = AlternativePlayerPrefabs[characterPrefabIndex];
+
 
         // Position to spawn the player object (if null it uses default of Vector3.zero)
         response.Position = Vector3.zero;
@@ -208,6 +206,11 @@ public class LoginManagerScript : MonoBehaviour
         SetSpawnLocation(clientId, response);
         NetworkLog.LogInfoServer("SpanwnPos of " + clientId + " is " + response.Position.ToString());
         NetworkLog.LogInfoServer("SpanwnRot of " + clientId + " is " + response.Rotation.ToString());
+
+        if (clientId > 0)
+        {
+            StarGroundMoveServerRPC();
+        }
 
         // If response.Approved is false, you can provide a message that explains the reason why via ConnectionApprovalResponse.Reason
         // On the client-side, NetworkManager.DisconnectReason will be populated with this message via DisconnectReasonMessage
@@ -226,39 +229,17 @@ public class LoginManagerScript : MonoBehaviour
         if(clientId == NetworkManager.Singleton.LocalClientId)
         {
             int countOfAllPos = posList.Length;
-            int randomPos = UnityEngine.Random.Range(0, countOfAllPos);
-            Debug.Log("Random pos is : " + randomPos);
-            spawnPos = new Vector3(posList[randomPos].position.x, posList[randomPos].position.y, posList[randomPos].position.z);
-            spawnRot = Quaternion.Euler(posList[randomPos].eulerAngles.x, posList[randomPos].eulerAngles.y, posList[randomPos].eulerAngles.z);
+            spawnPos = new Vector3(posList[0].position.x, posList[0].position.y, posList[0].position.z);
+            spawnRot = Quaternion.Euler(posList[0].eulerAngles.x, posList[0].eulerAngles.y, posList[0].eulerAngles.z);
         }
         else
         {
             int countOfAllPos = posList.Length;
-            int randomPos = UnityEngine.Random.Range(0, countOfAllPos);
-            Debug.Log("Random pos is : " + randomPos);
-            spawnPos = new Vector3(posList[randomPos].position.x, posList[randomPos].position.y, posList[randomPos].position.z);
-            spawnRot = Quaternion.Euler(posList[randomPos].eulerAngles.x, posList[randomPos].eulerAngles.y, posList[randomPos].eulerAngles.z);
-            /*switch(NetworkManager.Singleton.ConnectedClients.Count)
-            {
-                case 1:
-                    spawnPos = new Vector3(0f, 0f, 0f);
-                    spawnRot = Quaternion.Euler(0f,180f, 0f);
-                    break;
-                case 2:
-                    spawnPos = new Vector3(2f, 0f, 0f);
-                    spawnRot = Quaternion.Euler(0f,225f, 0f);
-                    break;
-            }*/
+            spawnPos = new Vector3(posList[1].position.x, posList[1].position.y, posList[1].position.z);
+            spawnRot = Quaternion.Euler(posList[1].eulerAngles.x, posList[1].eulerAngles.y, posList[1].eulerAngles.z);
         }
         response.Position = spawnPos;
         response.Rotation = spawnRot;
-    }
-    private void Update()
-    {
-        if ()
-        {
-
-        }
     }
     public void Client()
     {
@@ -269,29 +250,26 @@ public class LoginManagerScript : MonoBehaviour
         string clientData = HelperScript.CombineStrings(inputFields);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(clientData);
         NetworkManager.Singleton.StartClient();
+
         Debug.Log("Start client");
-        
     }
 
-        public bool NameApproveConnection(string clientData, string hostData)
+    [ServerRpc]
+    public void StarGroundMoveServerRPC()
+    {
+        isTwoPlayerSpawning.Value = true;
+    }
+
+    [ServerRpc]
+    public void StopGroundMoveServerRPC()
+    {
+        isTwoPlayerSpawning.Value = false;
+    }
+
+    public bool NameApproveConnection(string clientData, string hostData)
     {
         bool isApprove = System.String.Equals(clientData.Trim(), hostData.Trim()) ? false : true;
         Debug.Log("NameIsApprove = " + isApprove);
-        return isApprove;
-    }
-
-    public bool RoomIDApproveConnection(string clientData)
-    {
-        bool isApprove;
-        if (int.Parse(clientData) == roomID)
-        {
-            isApprove = true;
-        }
-        else
-        {
-            isApprove = false;
-        }
-        Debug.Log("RoomIDIsApprove = " + isApprove);
         return isApprove;
     }
 
@@ -305,14 +283,6 @@ public class LoginManagerScript : MonoBehaviour
         if (dropdown_TMP.GetComponent<TMP_Dropdown>().value == 1)
         {
             return 1;
-        }
-        if (dropdown_TMP.GetComponent<TMP_Dropdown>().value == 2)
-        {
-            return 2;
-        }
-        if (dropdown_TMP.GetComponent<TMP_Dropdown>().value == 3)
-        {
-            return 3;
         }
         return 0;
     }
