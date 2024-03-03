@@ -6,6 +6,7 @@ using TMPro;
 using Unity.Netcode.Components;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using System.Linq;
 
 public class HPPlayerScript : NetworkBehaviour
 {
@@ -24,10 +25,9 @@ public class HPPlayerScript : NetworkBehaviour
         ownerNetworkAnimationScript = GetComponent<OwnerNetworkAnimationScript>();
         mainPlayer = GetComponent<MainPlayerScript>();
 
-        health_1 = GameObject.Find("Health_1").GetComponent<Image>();
-        health_2 = GameObject.Find("Health_2").GetComponent<Image>();
-        health_3 = GameObject.Find("Health_3").GetComponent<Image>();
-       
+        health_1 = Resources.FindObjectsOfTypeAll<Image>().FirstOrDefault(g => g.CompareTag("Health_1"));
+        health_2 = Resources.FindObjectsOfTypeAll<Image>().FirstOrDefault(g => g.CompareTag("Health_2"));
+        health_3 = Resources.FindObjectsOfTypeAll<Image>().FirstOrDefault(g => g.CompareTag("Health_3"));
     }
 
     private void UpdatePlayerNameAndScore()

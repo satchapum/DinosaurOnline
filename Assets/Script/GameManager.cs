@@ -16,5 +16,9 @@ public class GameManager : Singleton<GameManager>
         {
             gameStart = true;
         }
+        else
+        {
+            gameStart = false;
+        }
     }
 }

@@ -7,21 +7,21 @@ using TMPro;
 public class TimeCount : NetworkBehaviour
 {
     [SerializeField] TMP_Text timeText;
-    [SerializeField] int currentTime = 0;
+    [SerializeField] float currentTime = 0;
     private void Update()
     {
-        if (IsOwnedByServer)
+        if (IsHost)
         {
             if (GameManager.Instance.gameStart == true)
             {
-                timeText.text = "Time : " + currentTime;
-                currentTime = currentTime + (int)Time.deltaTime;
+                timeText.text = "Time : " + (int)currentTime;
+                currentTime += Time.deltaTime;
             }
         }
         
     }
 
-    private void ResetTime()
+    public void ResetTime()
     {
         currentTime = 0;
     }

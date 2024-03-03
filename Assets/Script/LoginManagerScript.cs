@@ -34,6 +34,12 @@ public class LoginManagerScript : NetworkBehaviour
 
     [SerializeField] GameObject[] playerList;
 
+    public bool SetIsApproveConnection()
+    {
+        isApproveConnection = !isApproveConnection;
+        return isApproveConnection;
+    }
+
     private void Start()
     {
         NetworkManager.Singleton.OnServerStarted += HandleServerStarted;
@@ -109,11 +115,6 @@ public class LoginManagerScript : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
     }
 
-    public bool SetIsApproveConnection()
-    {
-        isApproveConnection = !isApproveConnection;
-        return isApproveConnection;
-    }
     public void Host()
     {
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;

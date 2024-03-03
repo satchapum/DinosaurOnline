@@ -11,6 +11,9 @@ TagManager:
   - dinoUI
   - godUI
   - healthUI
+  - Health_1
+  - Health_2
+  - Health_3
   layers:
   - Default
   - TransparentFX
