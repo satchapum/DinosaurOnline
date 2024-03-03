@@ -19,6 +19,8 @@ public class GroundMoveScript : NetworkBehaviour
     {
         rbGround_1 = ground_1.GetComponent<Rigidbody>();
         rbGround_2 = ground_2.GetComponent<Rigidbody>();
+
+        speed = GameManager.Instance.gameSpeed;
     }
     void FixedUpdate()
     {

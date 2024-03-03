@@ -5,29 +5,58 @@ using Unity.Netcode;
 using TMPro;
 using Unity.Netcode.Components;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class HPPlayerScript : NetworkBehaviour
 {
     private OwnerNetworkAnimationScript ownerNetworkAnimationScript;
 
-    TMP_Text p1Text;
     MainPlayerScript mainPlayer;
-    public NetworkVariable<int> hpP1 = new NetworkVariable<int>(5,
-    NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> hpDino = new NetworkVariable<int>(0,NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private Image health_1;
+    private Image health_2;
+    private Image health_3;
 
     void Start()
     {
-        p1Text = GameObject.Find("player_1Text").GetComponent<TMP_Text>();
+        hpDino.Value = GameManager.Instance.dinoHealth;
+
         ownerNetworkAnimationScript = GetComponent<OwnerNetworkAnimationScript>();
         mainPlayer = GetComponent<MainPlayerScript>();
+
+        health_1 = GameObject.Find("Health_1").GetComponent<Image>();
+        health_2 = GameObject.Find("Health_2").GetComponent<Image>();
+        health_3 = GameObject.Find("Health_3").GetComponent<Image>();
     }
 
     private void UpdatePlayerNameAndScore()
     {
         if (IsOwnedByServer)
         {
-            p1Text.text = $"{mainPlayer.playerNameA.Value} : {hpP1.Value}";
+            if (hpDino.Value == 3)
+            {
+                ChangeColor(Color.red, Color.red, Color.red);
+            }
+            else if (hpDino.Value == 2)
+            {
+                ChangeColor(Color.red, Color.red, Color.white);
+            }
+            else if (hpDino.Value == 1)
+            {
+                ChangeColor(Color.red, Color.white, Color.white);
+            }
+            else
+            {
+                ChangeColor(Color.white, Color.white, Color.white);
+            }
         }
+    }
+
+    private void ChangeColor(Color color_1, Color color_2, Color color_3)
+    {
+        health_1.color = color_1;
+        health_2.color = color_2;
+        health_3.color = color_3;
     }
 
     // Update is called once per frame
@@ -39,11 +68,11 @@ public class HPPlayerScript : NetworkBehaviour
 
     public void UpdateScore()
     {
-        if (hpP1.Value == 0 && IsOwnedByServer)
+        if (hpDino.Value == 0 && IsOwnedByServer)
         {
             ownerNetworkAnimationScript.SetTrigger("Die");
-            hpP1.Value = 5;
-            gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
+            //hpP1.Value = 5;
+            //gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
 
         }
     }
@@ -52,26 +81,18 @@ public class HPPlayerScript : NetworkBehaviour
     {
         if (!IsLocalPlayer) return;
 
-        if (collision.gameObject.tag == "DeathZone")
-        {
-            if (IsOwnedByServer)
-            {
-                hpP1.Value--;
-            }
-            gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
-        }
         if (collision.gameObject.tag == "Bomb")
         {
             if (IsOwnedByServer)
             {
-                hpP1.Value--;
+                hpDino.Value--;
             }
         }
         if (collision.gameObject.tag == "Bullet")
         {
             if (IsOwnedByServer)
             {
-                hpP1.Value--;
+                hpDino.Value--;
             }
         }
         UpdateScore();

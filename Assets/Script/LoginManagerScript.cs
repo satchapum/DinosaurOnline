@@ -19,8 +19,10 @@ public class LoginManagerScript : NetworkBehaviour
 
     public GameObject loginPanel;
     public GameObject leaveButton;
-    public GameObject scorePanel;
-    //public GameObject changeStatusButton;
+    //public GameObject scorePanel;
+
+    [SerializeField] GameObject dinoUI;
+    [SerializeField] GameObject godUI;
 
     public bool isTwoPlayerSpawning = false;
 
@@ -45,15 +47,13 @@ public class LoginManagerScript : NetworkBehaviour
         {
             loginPanel.SetActive(false);
             leaveButton.SetActive(true);
-            scorePanel.SetActive(true);
-            //changeStatusButton.SetActive(true);
+            //scorePanel.SetActive(true);
         }
         else
         {
             loginPanel.SetActive(true);
             leaveButton.SetActive(false);
-            scorePanel.SetActive(false);
-            //changeStatusButton.SetActive(false);
+            //scorePanel.SetActive(false);
         }
     }
 
@@ -79,6 +79,8 @@ public class LoginManagerScript : NetworkBehaviour
             NetworkManager.Singleton.Shutdown();
         }
 
+        dinoUI.SetActive(false);
+        godUI.SetActive(false);
         SetUIVisible(false);
 
     }
@@ -149,20 +151,6 @@ public class LoginManagerScript : NetworkBehaviour
                     else if (nameCheck == false)
                     {
                         isApprove = false;
-                        Debug.Log("Name is use alr && Room id is not correct");
-                    }
-                    else if (nameCheck == false)
-                    {
-                        if (nameCheck == false)
-                        {
-                            isApprove = false;
-                            Debug.Log("Name is use alr");
-                        }
-                        else
-                        {
-                            isApprove = false;
-                            Debug.Log("Room id is not correct");
-                        }
                     }
                 }
                 else if (i == 1)
@@ -189,6 +177,29 @@ public class LoginManagerScript : NetworkBehaviour
         // Your approval logic determines the following values
         response.Approved = isApprove;
         response.CreatePlayerObject = true;
+
+        if (IsHost)
+        {
+            if (characterPrefabIndex == 0)
+            {
+                dinoUI.gameObject.SetActive(true);
+            }
+            else
+            {
+                godUI.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            if (characterPrefabIndex == 0)
+            {
+                dinoUI.gameObject.SetActive(true);
+            }
+            else
+            {
+                godUI.gameObject.SetActive(false);
+            }
+        }
 
         // The Prefab hash value of the NetworkPrefab, if null the default NetworkManager player Prefab is used
         //response.PlayerPrefabHash = null;
@@ -255,8 +266,7 @@ public class LoginManagerScript : NetworkBehaviour
     {
         string username = userNameInputField.GetComponent<TMP_InputField>().text;
         string characterId = setInputSkinData().ToString();
-        string roomID = roomIdInputField.GetComponent<TMP_InputField>().text;
-        string[] inputFields = { username, characterId, roomID };
+        string[] inputFields = { username, characterId };
         string clientData = HelperScript.CombineStrings(inputFields);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(clientData);
         NetworkManager.Singleton.StartClient();
