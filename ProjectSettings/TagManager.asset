@@ -20,6 +20,7 @@ TagManager:
   - Button_3
   - Button_4
   - Button_5
+  - DeleteZone
   layers:
   - Default
   - TransparentFX

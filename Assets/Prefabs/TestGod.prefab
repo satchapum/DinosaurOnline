@@ -325,5 +325,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c937b5cf47f129644b828f392e8c2112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 7558019836842281974, guid: 64a29bf8d8ee08346a4406253cb79b43, type: 3}
+  meteorPrefab: {fileID: 7558019836842281974, guid: 64a29bf8d8ee08346a4406253cb79b43, type: 3}
+  birdPrefab: {fileID: 7558019836842281974, guid: 7815324568808294c97442e037c24ee9, type: 3}
+  stonePrefab: {fileID: 7558019836842281974, guid: caa0be26839a01c458fe8ddae65c77d8, type: 3}
+  cactusPrefab: {fileID: 7558019836842281974, guid: 5cfefd7b8c7e381438f64a90b0b5287a, type: 3}
+  pondPrefab: {fileID: 7558019836842281974, guid: 4fe93fe720b9fb04bb06189f2a5237f4, type: 3}
   skill_1: {fileID: 0}
+  skill_2: {fileID: 0}
+  skill_3: {fileID: 0}
+  skill_4: {fileID: 0}
+  skill_5: {fileID: 0}
