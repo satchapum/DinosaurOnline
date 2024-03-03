@@ -23,6 +23,7 @@ public class LoginManagerScript : NetworkBehaviour
 
     [SerializeField] GameObject dinoUI;
     [SerializeField] GameObject godUI;
+    [SerializeField] GameObject healthUI;
 
     public bool isTwoPlayerSpawning = false;
 
@@ -45,12 +46,14 @@ public class LoginManagerScript : NetworkBehaviour
     {
         if (isUserLogin)
         {
+            healthUI.SetActive(true);
             loginPanel.SetActive(false);
             leaveButton.SetActive(true);
             //scorePanel.SetActive(true);
         }
         else
         {
+            healthUI.SetActive(false);
             loginPanel.SetActive(true);
             leaveButton.SetActive(false);
             //scorePanel.SetActive(false);
@@ -178,20 +181,6 @@ public class LoginManagerScript : NetworkBehaviour
         response.Approved = isApprove;
         response.CreatePlayerObject = true;
 
-        if (IsLocalPlayer)
-        {
-            if (characterPrefabIndex == 0)
-            {
-                dinoUI.gameObject.SetActive(true);
-                godUI.gameObject.SetActive(false);
-            }
-            else
-            {
-                dinoUI.gameObject.SetActive(false);
-                godUI.gameObject.SetActive(true);
-            }
-        }
-
         // The Prefab hash value of the NetworkPrefab, if null the default NetworkManager player Prefab is used
         //response.PlayerPrefabHash = null;
 
@@ -217,6 +206,8 @@ public class LoginManagerScript : NetworkBehaviour
         // once it transitions from true to false the connection approval response will be processed.
         response.Pending = false;
     }
+
+
 
     private void SetSpawnLocation(ulong clientId, NetworkManager.ConnectionApprovalResponse response, int characterPrefabIndex)
     {
