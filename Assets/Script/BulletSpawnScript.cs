@@ -2,25 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using System.Linq;
+using UnityEngine.UI;
+
 
 public class BulletSpawnScript : NetworkBehaviour
 {
     public GameObject bulletPrefab;
     private List<GameObject> spawnedBullet = new List<GameObject>();
+    public Button skill_1;
 
-    void Update()
+    private void FixedUpdate()
     {
-        if (!IsOwner) return;
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            SpawnBulletServerRpc();
-        }
+        skill_1 = Resources.FindObjectsOfTypeAll<Button>().FirstOrDefault(g => g.CompareTag("Button_1"));
+       
+    }
+    
+    void Start()
+    {
+        skill_1 = Resources.FindObjectsOfTypeAll<Button>().FirstOrDefault(g => g.CompareTag("Button_1"));
+        skill_1.onClick.AddListener(SpawnBulletServerRpc);
     }
 
     [ServerRpc]
-    void SpawnBulletServerRpc()
+    public void SpawnBulletServerRpc()
     {
-        Vector3 spawnPos = transform.position + (transform.forward * 1.5f) + (transform.up * 1.5f);
+        Vector3 spawnPos = new Vector3(transform.position.x-1, transform.position.y, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject bullet = Instantiate(bulletPrefab, spawnPos, spawnRot);
         bullet.GetComponent<NetworkObject>().Spawn();

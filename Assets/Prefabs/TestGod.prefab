@@ -21,6 +21,8 @@ GameObject:
   - component: {fileID: -1155235117755367516}
   - component: {fileID: 3402299698747836737}
   - component: {fileID: -262936966672278640}
+  - component: {fileID: 7714209414102328974}
+  - component: {fileID: 5210995438984866849}
   m_Layer: 0
   m_Name: TestGod
   m_TagString: Player
@@ -299,3 +301,29 @@ MonoBehaviour:
   godUI: {fileID: 0}
   healthUI: {fileID: 0}
   characterNumber: 1
+--- !u!114 &7714209414102328974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521542742648395849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5210995438984866849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 521542742648395849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c937b5cf47f129644b828f392e8c2112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 7558019836842281974, guid: 64a29bf8d8ee08346a4406253cb79b43, type: 3}
+  skill_1: {fileID: 0}
