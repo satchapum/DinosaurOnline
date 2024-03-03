@@ -1435,6 +1435,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeText: {fileID: 344567714}
   currentTime: 0
+  timeToChangeSpeed: 5
 --- !u!4 &327760435
 Transform:
   m_ObjectHideFlags: 0
@@ -1597,7 +1598,7 @@ GameObject:
   - component: {fileID: 344567714}
   m_Layer: 5
   m_Name: Time
-  m_TagString: Untagged
+  m_TagString: timeUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6382,7 +6383,6 @@ MonoBehaviour:
   ground_1: {fileID: 1551234520}
   ground_2: {fileID: 2111582055}
   loginManager: {fileID: 743086148}
-  speed: 10
 --- !u!114 &1873130644
 MonoBehaviour:
   m_ObjectHideFlags: 0

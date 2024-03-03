@@ -9,6 +9,7 @@ public class OpenUI : NetworkBehaviour
     [SerializeField] GameObject dinoUI;
     [SerializeField] GameObject godUI;
     [SerializeField] GameObject healthUI;
+    [SerializeField] GameObject timeUI;
 
     [SerializeField] int characterNumber;
 
@@ -17,7 +18,7 @@ public class OpenUI : NetworkBehaviour
         dinoUI = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("dinoUI"));
         godUI = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("godUI"));
         healthUI = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("healthUI"));
-
+        timeUI = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("timeUI"));
     }
 
     private void FixedUpdate()
@@ -29,12 +30,14 @@ public class OpenUI : NetworkBehaviour
                 dinoUI.gameObject.SetActive(true);
                 godUI.gameObject.SetActive(false);
                 healthUI.gameObject.SetActive(true);
+                timeUI.gameObject.SetActive(true);
             }
             else
             {
                 dinoUI.gameObject.SetActive(false);
                 godUI.gameObject.SetActive(true);
                 healthUI.gameObject.SetActive(false);
+                timeUI.gameObject.SetActive(false);
             }
         }
     }

@@ -21,6 +21,7 @@ TagManager:
   - Button_4
   - Button_5
   - DeleteZone
+  - timeUI
   layers:
   - Default
   - TransparentFX
