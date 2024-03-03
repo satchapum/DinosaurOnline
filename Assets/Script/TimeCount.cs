@@ -8,6 +8,8 @@ public class TimeCount : NetworkBehaviour
 {
     [SerializeField] TMP_Text timeText;
     [SerializeField] float currentTime = 0;
+
+    [SerializeField] float timeToChangeSpeed = 5;
     private void Update()
     {
         if (IsHost)
@@ -16,6 +18,12 @@ public class TimeCount : NetworkBehaviour
             {
                 timeText.text = "Time : " + (int)currentTime;
                 currentTime += Time.deltaTime;
+            }
+
+            if (currentTime >= timeToChangeSpeed)
+            {
+                GameManager.Instance.gameSpeed += 5;
+                timeToChangeSpeed = timeToChangeSpeed + 2;
             }
         }
         

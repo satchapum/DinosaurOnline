@@ -10,8 +10,6 @@ public class GroundMoveScript : NetworkBehaviour
 
     [SerializeField] LoginManagerScript loginManager;
 
-    [SerializeField] float speed;
-
     private Rigidbody rbGround_1;
     private Rigidbody rbGround_2;
 
@@ -19,15 +17,13 @@ public class GroundMoveScript : NetworkBehaviour
     {
         rbGround_1 = ground_1.GetComponent<Rigidbody>();
         rbGround_2 = ground_2.GetComponent<Rigidbody>();
-
-        speed = GameManager.Instance.gameSpeed;
     }
     void FixedUpdate()
     {
         if (loginManager.isTwoPlayerSpawning)
         {
-            rbGround_1.MovePosition(rbGround_1.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
-            rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * speed);
+            rbGround_1.MovePosition(rbGround_1.position + new Vector3(-1, 0, 0) * Time.deltaTime * GameManager.Instance.gameSpeed);
+            rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * GameManager.Instance.gameSpeed);
 
             Vector3 positionToOut = new Vector3(-120, 0, 7.1f);
             Vector3 positionToReset_1 = new Vector3(ground_2.transform.position.x + 115f, -0.5f, 7.1f);
