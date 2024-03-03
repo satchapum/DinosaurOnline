@@ -27,6 +27,7 @@ public class HPPlayerScript : NetworkBehaviour
         health_1 = GameObject.Find("Health_1").GetComponent<Image>();
         health_2 = GameObject.Find("Health_2").GetComponent<Image>();
         health_3 = GameObject.Find("Health_3").GetComponent<Image>();
+       
     }
 
     private void UpdatePlayerNameAndScore()
@@ -45,7 +46,7 @@ public class HPPlayerScript : NetworkBehaviour
             {
                 ChangeColor(Color.red, Color.white, Color.white);
             }
-            else
+            else if (hpDino.Value == 0)
             {
                 ChangeColor(Color.white, Color.white, Color.white);
             }

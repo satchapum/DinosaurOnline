@@ -178,26 +178,17 @@ public class LoginManagerScript : NetworkBehaviour
         response.Approved = isApprove;
         response.CreatePlayerObject = true;
 
-        if (IsHost)
+        if (IsLocalPlayer)
         {
             if (characterPrefabIndex == 0)
             {
                 dinoUI.gameObject.SetActive(true);
+                godUI.gameObject.SetActive(false);
             }
             else
             {
-                godUI.gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            if (characterPrefabIndex == 0)
-            {
-                dinoUI.gameObject.SetActive(true);
-            }
-            else
-            {
-                godUI.gameObject.SetActive(false);
+                dinoUI.gameObject.SetActive(false);
+                godUI.gameObject.SetActive(true);
             }
         }
 
