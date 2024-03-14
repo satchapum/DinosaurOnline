@@ -52,7 +52,7 @@ public class PlayerControllerScript : NetworkBehaviour
 
     void moveForward()
     {
-        float zInput = Input.GetAxis("Vertical");
+        float zInput = Input.GetAxis("Horizontal");
 
         Vector3 newPosition = transform.position + Vector3.forward * zInput * speed * Time.deltaTime;
 
