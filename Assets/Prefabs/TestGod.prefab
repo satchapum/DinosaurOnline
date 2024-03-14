@@ -141,7 +141,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 114
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!114 &3759353892708583264
 MonoBehaviour:
@@ -329,10 +329,13 @@ MonoBehaviour:
   meteorPrefab: {fileID: 7558019836842281974, guid: 64a29bf8d8ee08346a4406253cb79b43, type: 3}
   birdPrefab: {fileID: 7558019836842281974, guid: 7815324568808294c97442e037c24ee9, type: 3}
   stonePrefab: {fileID: 7558019836842281974, guid: caa0be26839a01c458fe8ddae65c77d8, type: 3}
-  cactusPrefab: {fileID: 7558019836842281974, guid: 5cfefd7b8c7e381438f64a90b0b5287a, type: 3}
+  cactusPrefab: {fileID: 4130540285435591111, guid: 967fa467ce64e1e48ac1af1352e87011, type: 3}
   pondPrefab: {fileID: 7558019836842281974, guid: 4fe93fe720b9fb04bb06189f2a5237f4, type: 3}
   skill_1: {fileID: 0}
   skill_2: {fileID: 0}
   skill_3: {fileID: 0}
   skill_4: {fileID: 0}
   skill_5: {fileID: 0}
+  meteorTrans1: {fileID: 0}
+  meteorTrans2: {fileID: 0}
+  meteorTrans3: {fileID: 0}
