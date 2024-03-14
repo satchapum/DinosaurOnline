@@ -33,6 +33,12 @@ public class CactusScript : NetworkBehaviour
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
             obstacleSpawn.DestroyCactusServerRpc(networkObjId);
         }
+
+        if (collision.gameObject.tag == "Cactus")
+        {
+            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+            obstacleSpawn.DestroyCactusServerRpc(networkObjId);
+        }
     }
 
     private void SpawnEffect()

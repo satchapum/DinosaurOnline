@@ -32,6 +32,7 @@ public class PondScript : NetworkBehaviour
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
             obstacleSpawn.DestroyPondServerRpc(networkObjId);
         }
+
     }
 
     private void SpawnEffect()

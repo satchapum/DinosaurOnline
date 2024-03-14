@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2d3dbde794d28ba42b1e5bdbceaa0675, type: 3}
       propertyPath: m_TagString
-      value: Bullet
+      value: Cactus
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 4248222234
+  GlobalObjectIdHash: 2564473082
   InScenePlacedSourceGlobalObjectIdHash: 2564473082
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
