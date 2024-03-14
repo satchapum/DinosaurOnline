@@ -25,6 +25,7 @@ TagManager:
   - MeteorSpawn1
   - MeteorSpawn2
   - MeteorSpawn3
+  - Cactus
   layers:
   - Default
   - TransparentFX
