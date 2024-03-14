@@ -56,7 +56,7 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnMeteoServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x-1, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject meteor = Instantiate(meteorPrefab, spawnPos, spawnRot);
         meteor.GetComponent<NetworkObject>().Spawn();
@@ -68,7 +68,7 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnStoneServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject stone = Instantiate(stonePrefab, spawnPos, spawnRot);
         stone.GetComponent<NetworkObject>().Spawn();
@@ -80,7 +80,7 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnPondServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject pond = Instantiate(pondPrefab, spawnPos, spawnRot);
         pond.GetComponent<NetworkObject>().Spawn();
@@ -92,7 +92,7 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnCactusServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject cactus = Instantiate(cactusPrefab, spawnPos, spawnRot);
         cactus.GetComponent<NetworkObject>().Spawn();
@@ -104,7 +104,7 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnBirdServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 1, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject bird = Instantiate(birdPrefab, spawnPos, spawnRot);
         bird.GetComponent<NetworkObject>().Spawn();

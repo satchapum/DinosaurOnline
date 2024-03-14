@@ -92,9 +92,6 @@ public class PlayerControllerScript : NetworkBehaviour
 
     private void Update()
     {
-        normalCollider.enabled = true;
-        halfCollider.enabled = false;
-
         if (!IsOwner) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -107,7 +104,8 @@ public class PlayerControllerScript : NetworkBehaviour
             return;
         }
 
-
+        normalCollider.enabled = true;
+        halfCollider.enabled = false;
 
     }
 }
