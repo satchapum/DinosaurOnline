@@ -54,7 +54,7 @@ public class PlayerControllerScript : NetworkBehaviour
     {
         float zInput = Input.GetAxis("Horizontal");
 
-        Vector3 newPosition = transform.position + Vector3.forward * zInput * speed * Time.deltaTime;
+        Vector3 newPosition = transform.position + Vector3.right * zInput * speed * Time.deltaTime;
 
         transform.position = newPosition;
 
@@ -92,6 +92,9 @@ public class PlayerControllerScript : NetworkBehaviour
 
     private void Update()
     {
+        normalCollider.enabled = true;
+        halfCollider.enabled = false;
+
         if (!IsOwner) return;
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -104,8 +107,7 @@ public class PlayerControllerScript : NetworkBehaviour
             return;
         }
 
-        normalCollider.enabled = true;
-        halfCollider.enabled = false;
+
 
     }
 }

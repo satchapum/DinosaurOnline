@@ -3557,7 +3557,7 @@ GameObject:
   - component: {fileID: 850030576}
   - component: {fileID: 850030575}
   m_Layer: 0
-  m_Name: Red cliff bacKground
+  m_Name: Red cliff background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3635,7 +3635,7 @@ RectTransform:
   m_GameObject: {fileID: 850030574}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 7.3}
-  m_LocalScale: {x: 0.058612376, y: 0.058612376, z: 0.058612376}
+  m_LocalScale: {x: 0.048050195, y: 0.048050195, z: 0.048050195}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 460572062}
@@ -3649,7 +3649,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 2.3, y: 15.7}
+  m_AnchoredPosition: {x: 2.3, y: 14.8}
   m_SizeDelta: {x: 800, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &852383894
