@@ -6,15 +6,20 @@ using TMPro;
 using System;
 using Unity.Mathematics;
 using Newtonsoft.Json.Bson;
+using Unity.Netcode.Transports.UTP;
 
 
 public class LoginManagerScript : NetworkBehaviour
 {
+    public string ipAddress = "127.0.0.1";
+    public TMP_InputField joinCodeInputField;
+    public string joinCode;
+    UnityTransport transport;
+
     public List<uint> AlternativePlayerPrefabs;
     public TMP_Dropdown dropdown_TMP;
 
     public TMP_InputField userNameInputField;
-    public TMP_InputField roomIdInputField;
     private bool isApproveConnection = false;
 
     public GameObject loginPanel;
@@ -115,8 +120,12 @@ public class LoginManagerScript : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
     }
 
-    public void Host()
+    public async void Host()
     {
+        if (RelayManagerScript.Instance.IsRelayEnabled)
+        {
+            await RelayManagerScript.Instance.CreateRelay();
+        }
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartHost();
     }
@@ -245,8 +254,13 @@ public class LoginManagerScript : NetworkBehaviour
         response.Position = spawnPos;
         response.Rotation = spawnRot;
     }
-    public void Client()
+    public async void Client()
     {
+        joinCode = joinCodeInputField.GetComponent<TMP_InputField>().text;
+        if (RelayManagerScript.Instance.IsRelayEnabled && !string.IsNullOrEmpty(joinCode))
+        {
+            await RelayManagerScript.Instance.JoinRelay(joinCode);
+        }
         string username = userNameInputField.GetComponent<TMP_InputField>().text;
         string characterId = setInputSkinData().ToString();
         string[] inputFields = { username, characterId };
