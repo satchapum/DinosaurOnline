@@ -82,7 +82,7 @@ public class HPPlayerScript : NetworkBehaviour
     {
         if (!IsLocalPlayer) return;
 
-        if (collision.gameObject.tag == "Bomb")
+        if (collision.gameObject.tag == "Cactus")
         {
             if (IsOwnedByServer)
             {
