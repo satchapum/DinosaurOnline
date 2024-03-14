@@ -25,7 +25,7 @@ public class CactusScript : NetworkBehaviour
         if (collision.gameObject.tag == "Player")
         {
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyBirdServerRpc(networkObjId);
+            obstacleSpawn.DestroyCactusServerRpc(networkObjId);
         }
 
         if (collision.gameObject.tag == "DeleteZone")
