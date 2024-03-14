@@ -18,7 +18,7 @@ public class MeteorScript : NetworkBehaviour
 
     private void Update()
     {
-        transform.position += transform.forward * GameManager.Instance.gameSpeed * Time.deltaTime;
+        //transform.position += transform.forward * GameManager.Instance.gameSpeed * Time.deltaTime;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -32,7 +32,7 @@ public class MeteorScript : NetworkBehaviour
 
         }
 
-        if (collision.gameObject.tag == "DeleteZone")
+        if (collision.gameObject.tag == "Ground")
         {
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
             obstacleSpawn.DestroyMeteorServerRpc(networkObjId);

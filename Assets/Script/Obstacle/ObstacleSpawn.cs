@@ -28,6 +28,10 @@ public class ObstacleSpawn : NetworkBehaviour
     public Button skill_4;
     public Button skill_5;
 
+    [SerializeField] GameObject meteorTrans1;
+    [SerializeField] GameObject meteorTrans2;
+    [SerializeField] GameObject meteorTrans3;
+
     private void FixedUpdate()
     {
         FindObject();
@@ -51,12 +55,30 @@ public class ObstacleSpawn : NetworkBehaviour
         skill_3 = Resources.FindObjectsOfTypeAll<Button>().FirstOrDefault(g => g.CompareTag("Button_3"));
         skill_4 = Resources.FindObjectsOfTypeAll<Button>().FirstOrDefault(g => g.CompareTag("Button_4"));
         skill_5 = Resources.FindObjectsOfTypeAll<Button>().FirstOrDefault(g => g.CompareTag("Button_5"));
+
+        meteorTrans1 = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("MeteorSpawn1"));
+        meteorTrans2 = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("MeteorSpawn2"));
+        meteorTrans3 = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(g => g.CompareTag("MeteorSpawn3"));
     }
 
     [ServerRpc]
     public void SpawnMeteoServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
+        int randomNum = (int)Random.Range(1, 4);
+        Vector3 spawnPos;
+        if (randomNum == 1)
+        {
+            spawnPos = new Vector3(meteorTrans1.transform.position.x, meteorTrans1.transform.position.y, meteorTrans1.transform.position.z);
+        }
+        else if (randomNum == 2)
+        {
+            spawnPos = new Vector3(meteorTrans2.transform.position.x, meteorTrans2.transform.position.y, meteorTrans2.transform.position.z);
+        }
+        else
+        {
+            spawnPos = new Vector3(meteorTrans3.transform.position.x, meteorTrans3.transform.position.y, meteorTrans3.transform.position.z);
+        }
+
         Quaternion spawnRot = transform.rotation;
         GameObject meteor = Instantiate(meteorPrefab, spawnPos, spawnRot);
         meteor.GetComponent<NetworkObject>().Spawn();

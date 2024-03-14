@@ -22,6 +22,9 @@ TagManager:
   - Button_5
   - DeleteZone
   - timeUI
+  - MeteorSpawn1
+  - MeteorSpawn2
+  - MeteorSpawn3
   layers:
   - Default
   - TransparentFX
