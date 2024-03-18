@@ -76,6 +76,7 @@ public class HPPlayerScript : NetworkBehaviour
         if (hpDino.Value == 0 && IsOwnedByServer)
         {
             ownerNetworkAnimationScript.SetTrigger("Die");
+            GameManager.Instance.gameStart = false;
             loginManagerScript.Leave();
             //hpP1.Value = 5;
             //gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
