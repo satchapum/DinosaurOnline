@@ -1537,8 +1537,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 344567714}
-  currentTime: 0
-  timeToChangeSpeed: 5
+  timeToCount: 15
+  currentTime: 15
+  speedToChange: 5
+  timeToChangeSpeed: 10
+  loginManager: {fileID: 743086148}
 --- !u!4 &327760435
 Transform:
   m_ObjectHideFlags: 0
@@ -2463,6 +2466,7 @@ MonoBehaviour:
   dinoHealth: 3
   loginScript: {fileID: 743086148}
   gameStart: 0
+  timeCount: {fileID: 327760434}
 --- !u!4 &548704389
 Transform:
   m_ObjectHideFlags: 0

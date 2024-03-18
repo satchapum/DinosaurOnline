@@ -10,15 +10,17 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] LoginManagerScript loginScript;
 
     [SerializeField] public bool gameStart = false;
+    [SerializeField] TimeCount timeCount;
     private void Update()
     {
-        if (loginScript.isTwoPlayerSpawning == true && gameStart == false)
+        if (loginScript.isTwoPlayerSpawning == true && gameStart == false && timeCount.currentTime >= 0)
         {
             gameStart = true;
         }
-        else
+        else if(timeCount.currentTime <= 0)
         {
             gameStart = false;
+            gameSpeed = 0;
         }
     }
 }

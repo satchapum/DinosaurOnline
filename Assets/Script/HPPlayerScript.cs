@@ -18,9 +18,13 @@ public class HPPlayerScript : NetworkBehaviour
     private Image health_2;
     private Image health_3;
 
+    [SerializeField] LoginManagerScript loginManagerScript;
+
     void Start()
     {
         hpDino.Value = GameManager.Instance.dinoHealth;
+
+        loginManagerScript = Resources.FindObjectsOfTypeAll<LoginManagerScript>().FirstOrDefault(g => g.CompareTag("LoginManager"));
 
         ownerNetworkAnimationScript = GetComponent<OwnerNetworkAnimationScript>();
         mainPlayer = GetComponent<MainPlayerScript>();
@@ -72,9 +76,9 @@ public class HPPlayerScript : NetworkBehaviour
         if (hpDino.Value == 0 && IsOwnedByServer)
         {
             ownerNetworkAnimationScript.SetTrigger("Die");
+            loginManagerScript.Leave();
             //hpP1.Value = 5;
             //gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
-
         }
     }
 
