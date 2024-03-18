@@ -1536,10 +1536,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeText: {fileID: 344567714}
-  timeToCount: 15
-  currentTime: 15
+  timeToCount: 120
+  currentTime: 120
   speedToChange: 5
-  timeToChangeSpeed: 10
+  timeToChangeSpeed: 15
   loginManager: {fileID: 743086148}
 --- !u!4 &327760435
 Transform:
