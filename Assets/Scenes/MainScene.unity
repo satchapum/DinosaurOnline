@@ -3331,7 +3331,7 @@ GameObject:
   - component: {fileID: 743086148}
   m_Layer: 0
   m_Name: LoginManager
-  m_TagString: Untagged
+  m_TagString: LoginManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
