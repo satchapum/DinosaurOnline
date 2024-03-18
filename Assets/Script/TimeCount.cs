@@ -7,11 +7,11 @@ using TMPro;
 public class TimeCount : NetworkBehaviour
 {
     [SerializeField] TMP_Text timeText;
-    [SerializeField] float timeToCount = 15;
-    [SerializeField] public float currentTime = 0;
+    [SerializeField] float timeToCount = 120;
+    [SerializeField] public float currentTime = 120;
     [SerializeField] float speedToChange = 5;
 
-    [SerializeField] float timeToChangeSpeed = 30;
+    [SerializeField] float timeToChangeSpeed = 90;
     [SerializeField] LoginManagerScript loginManager;
 
     private void Start()
@@ -38,7 +38,7 @@ public class TimeCount : NetworkBehaviour
             if (currentTime <= timeToChangeSpeed)
             {
                 GameManager.Instance.gameSpeed += speedToChange;
-                timeToChangeSpeed = timeToChangeSpeed - 30;
+                timeToChangeSpeed = timeToChangeSpeed - 15;
             }
         }
         
@@ -46,6 +46,9 @@ public class TimeCount : NetworkBehaviour
 
     public void ResetTime()
     {
-        currentTime = 0;
+        currentTime = timeToCount;
+        timeToChangeSpeed = 90;
+        timeText.text = "Time : " + (int)currentTime;
+
     }
 }

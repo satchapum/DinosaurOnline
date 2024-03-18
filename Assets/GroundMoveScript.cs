@@ -20,7 +20,7 @@ public class GroundMoveScript : NetworkBehaviour
     }
     void FixedUpdate()
     {
-        if (GameManager.Instance.gameStart)
+        if (GameManager.Instance.gameStart && loginManager.isTwoPlayerSpawning)
         {
             rbGround_1.MovePosition(rbGround_1.position + new Vector3(-1, 0, 0) * Time.deltaTime * GameManager.Instance.gameSpeed);
             rbGround_2.MovePosition(rbGround_2.position + new Vector3(-1, 0, 0) * Time.deltaTime * GameManager.Instance.gameSpeed);

@@ -79,7 +79,6 @@ public class LoginManagerScript : NetworkBehaviour
     }
     public void Leave()
     {
-
         if (NetworkManager.Singleton.IsClient)
         {
             NetworkManager.Singleton.Shutdown();
@@ -89,7 +88,6 @@ public class LoginManagerScript : NetworkBehaviour
 
         else if (NetworkManager.Singleton.IsHost)
         {
-
             NetworkManager.Singleton.Shutdown();
         }
 
@@ -308,9 +306,17 @@ public class LoginManagerScript : NetworkBehaviour
         playerList = GameObject.FindGameObjectsWithTag("Player");
         if (IsHost)
         {
-            if (playerList.Length <= 1)
+            if (playerList.Length <= 0)
             {
+                GameManager.Instance.gameStart = false;
+                isTwoPlayerSpawning = false;
+
+                dinoUI.SetActive(false);
+                godUI.SetActive(false);
+                SetUIVisible(false);
+
                 StopGroundMoveServerRPC();
+
             }
             else if (playerList.Length == 2)
             {
