@@ -10,13 +10,14 @@ using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using System.Linq;
 using TMPro;
 
 public class LobbyScript : Singleton<LobbyScript>
 {
     Lobby hostLobby;
     private Lobby joinedLobby;
-
+    private string playerName;
     private float lobbyUpdateTimer;
 
     [SerializeField] TMP_Text roomNameText;
@@ -24,6 +25,7 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] TMP_Text playerNameText;
     [SerializeField] TMP_InputField lobbyNameInput;
     [SerializeField] TMP_InputField playerNameInput;
+    [SerializeField] TMP_InputField playerNameChangeInput;
     [SerializeField] GameObject lobbyJoinPanel;
     [SerializeField] GameObject roomJoinPanel;
 
@@ -64,7 +66,8 @@ public class LobbyScript : Singleton<LobbyScript>
                 {
                     Data = new Dictionary<string, PlayerDataObject>
                     {
-                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)}
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 },
                 Data = new Dictionary<string, DataObject>
@@ -78,6 +81,7 @@ public class LobbyScript : Singleton<LobbyScript>
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
             Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers  + "," + lobby.Id + "," +  lobby.LobbyCode);
             PrintPlayers(hostLobby);
+
             UpdateRoomNameAndJoinCode(hostLobby);
         }
         catch(LobbyServiceException e)
@@ -116,6 +120,7 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)}
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 }
             };
@@ -189,7 +194,7 @@ public class LobbyScript : Singleton<LobbyScript>
 
     }
 
-    private async void JoinLobby()
+    /*private async void JoinLobby()
     {
         try
         {
@@ -200,7 +205,7 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             Debug.Log(e);   
         }
-    }
+    }*/
 
     public void PrintPlayers(Lobby lobby)
     {
@@ -218,12 +223,46 @@ public class LobbyScript : Singleton<LobbyScript>
 
         foreach (Player player in lobby.Players)
         {
-            playerNameText.text = "Player name : " + player.Data["PlayerName"].Value;
+            if (player.Id == AuthenticationService.Instance.PlayerId)
+            {
+                playerNameText.text = "Player name : " + playerNameInput.text;
+            }
         }
-
 
         roomNameText.text = lobby.Name;
         joinCodeText.text = "Join code : " + lobby.Data["JoinCodeKey"].Value;
     }
 
+    public async void UpdatePlayerName()
+    {
+        try
+        {
+            playerName = playerNameInput.text;
+            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
+                AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+            {
+                Data = new Dictionary<string, PlayerDataObject>
+                {
+                    { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameChangeInput.text) }
+                }
+            });
+            PrintPlayers(joinedLobby);
+            UpdatePlayerName(joinedLobby);
+        }
+        catch ( LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public void UpdatePlayerName(Lobby lobby)
+    {
+        foreach (Player player in lobby.Players)
+        {
+            if (player.Id == AuthenticationService.Instance.PlayerId)
+            {
+                playerNameText.text = "Player name : " + player.Data["PlayerName"].Value;
+            }
+        }
+    }
 }
