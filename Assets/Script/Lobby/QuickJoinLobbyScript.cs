@@ -24,9 +24,9 @@ public class QuickJoinLobbyScript : MonoBehaviour
 
     public async void CreateOrJoinLobby()
     {
-        startButton.SetActive(false);
+        /*startButton.SetActive(false);
         lobbyJoinPanel.SetActive(false);
-        roomJoinPanel.SetActive(true);
+        roomJoinPanel.SetActive(true);*/
 
         //joinedLobby = await QuickJoinLobby();
         joinedLobby = await QuickJoinLobby() ?? await CreateLobby();
@@ -146,7 +146,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
 
             //NetworkManager.Singleton.StartHost();
 
-            Debug.Log("Join code = " + joinCode);
+            Debug.Log("Join code = " + lobby.LobbyCode);
             LobbyScript.Instance.PrintPlayers(lobby);
             LobbyScript.Instance.UpdateRoomNameAndJoinCode(lobby);
             return lobby;

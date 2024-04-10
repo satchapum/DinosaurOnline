@@ -122,13 +122,14 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        //{"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 }
             };
             Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(joinCodeIdInput.text, options);
             joinedLobby = lobby;
             Debug.Log("Joined by lobby code : " + joinCodeIdInput.text);
+            UpdateRoomNameAndJoinCode(joinedLobby);
             PrintPlayers(joinedLobby);
         }catch (LobbyServiceException e)
         {
@@ -232,7 +233,7 @@ public class LobbyScript : Singleton<LobbyScript>
         }
 
         roomNameText.text = lobby.Name;
-        joinCodeText.text = "Join code : " + lobby.Data["JoinCodeKey"].Value;
+        joinCodeText.text = "Join code : " + lobby.LobbyCode;
     }
 
     public async void UpdatePlayerName()
