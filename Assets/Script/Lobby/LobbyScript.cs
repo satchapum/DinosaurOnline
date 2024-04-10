@@ -119,7 +119,7 @@ public class LobbyScript : Singleton<LobbyScript>
                 {
                     Data = new Dictionary<string, PlayerDataObject>
                     {
-                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)}
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
                         {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 }
