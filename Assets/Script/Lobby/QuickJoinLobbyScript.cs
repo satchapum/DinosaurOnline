@@ -13,7 +13,6 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using Unity.Networking.Transport.Relay;
 using TMPro;
-
 public class QuickJoinLobbyScript : MonoBehaviour
 {
     public TMP_InputField userNameInput;
@@ -33,12 +32,12 @@ public class QuickJoinLobbyScript : MonoBehaviour
         playerName = userNameInput.GetComponent<TMP_InputField>().text;
         //joinedLobby = await QuickJoinLobby();
         joinedLobby = await QuickJoinLobby() ?? await CreateLobby();
-        //if (joinedLobby == null)
-        //{
-        //   startButton.SetActive(true);
-        //    lobbyJoinPanel.SetActive(true);
-        //    roomJoinPanel.SetActive(false);
-        //}
+        if (joinedLobby == null)
+        {
+           startButton.SetActive(true);
+           lobbyJoinPanel.SetActive(true);
+           roomJoinPanel.SetActive(false);
+        }
     }
 
     private async Task<Lobby> QuickJoinLobby()
@@ -78,7 +77,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
             return null;
         }
     }
-
+    [ContextMenu("FindRandomLobby")]
     private async Task<Lobby> FindRandomLobby()
     {
         try
@@ -87,7 +86,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
             {
                 Filters = new List<QueryFilter>
                 {
-                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots,"1",QueryFilter.OpOptions.GT)
+                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots,"0",QueryFilter.OpOptions.GT)
                 }
             };
             QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions);
@@ -124,7 +123,8 @@ public class QuickJoinLobbyScript : MonoBehaviour
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName",
-                            new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,playerName)}
+                            new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,playerName)},
+                        //{"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 },
                 Data = new Dictionary<string, DataObject>

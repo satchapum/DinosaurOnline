@@ -23,11 +23,13 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text joinCodeText;
     [SerializeField] TMP_Text playerNameText;
+    [SerializeField] TMP_InputField joinCodeIdInput;
     [SerializeField] TMP_InputField lobbyNameInput;
     [SerializeField] TMP_InputField playerNameInput;
     [SerializeField] TMP_InputField playerNameChangeInput;
     [SerializeField] GameObject lobbyJoinPanel;
     [SerializeField] GameObject roomJoinPanel;
+    [SerializeField] TMP_Dropdown characterSelect;
 
     private void Update()
     {
@@ -67,7 +69,7 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        //{"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 },
                 Data = new Dictionary<string, DataObject>
@@ -109,7 +111,7 @@ public class LobbyScript : Singleton<LobbyScript>
         }
 
     }
-    public async void JoinByLobbyCode(string lobbyCode)
+    public async void JoinByLobbyCode()
     {
         try
         {
@@ -120,13 +122,13 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        //{"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 }
             };
-            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode, options);
+            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(joinCodeIdInput.text, options);
             joinedLobby = lobby;
-            Debug.Log("Joined  by lobby code : " + lobbyCode);
+            Debug.Log("Joined by lobby code : " + joinCodeIdInput.text);
             PrintPlayers(joinedLobby);
         }catch (LobbyServiceException e)
         {
@@ -243,7 +245,7 @@ public class LobbyScript : Singleton<LobbyScript>
             {
                 Data = new Dictionary<string, PlayerDataObject>
                 {
-                    { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameChangeInput.text) }
+                    { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameChangeInput.text) },
                 }
             });
             PrintPlayers(joinedLobby);
