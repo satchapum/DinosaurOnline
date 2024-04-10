@@ -8,20 +8,42 @@ using System.Net.Http.Headers;
 public class LobbyScript : Singleton<LobbyScript>
 {
     Lobby hostLobby;
+    private Lobby joinedLobby;
 
     string playerName;
+    private float lobbyUpdateTimer;
 
     private void Start()
     {
         playerName = "Myname" + Random.Range(1, 9999);
         Debug.Log("Player name = " + playerName);
     }
+    private void Update()
+    {
+        HandleLobbyPollForUpdate();
+    }
+
+    private async void HandleLobbyPollForUpdate()
+    {
+        if (joinedLobby != null)
+        {
+            lobbyUpdateTimer -= Time.deltaTime;
+            if (lobbyUpdateTimer < 0f)
+            {
+                float lobbyUpdateTimerMax = 1.1f;
+                lobbyUpdateTimer = lobbyUpdateTimerMax;
+                Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+                joinedLobby = lobby;
+            }
+        }
+    }
+
     public async void CreateLobby()
     {
         try
         {
             string lobbyName = "My lobby";
-            int maxPlayers = 4;
+            int maxPlayers = 2;
             CreateLobbyOptions options = new CreateLobbyOptions
             {
                 IsPrivate = false,
@@ -40,6 +62,7 @@ public class LobbyScript : Singleton<LobbyScript>
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
             hostLobby = lobby;
+            joinedLobby = hostLobby;
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
             Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers  + "," + lobby.Id + "," +  lobby.LobbyCode);
             PrintPlayers(hostLobby);
@@ -48,7 +71,26 @@ public class LobbyScript : Singleton<LobbyScript>
             Debug.Log(e);
         }
     }
+    private async void UpdateLobbyGameMode(string gameMode)
+    {
+        try
+        {
+            hostLobby = await Lobbies.Instance.UpdateLobbyAsync(hostLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                    { "GameMode", new DataObject(DataObject.VisibilityOptions.Public, gameMode)}
+                }
+            });
+            joinedLobby = hostLobby;
+            PrintPlayers(hostLobby);
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
 
+    }
     public async void JoinByLobbyCode(string lobbyCode)
     {
         try

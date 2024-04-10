@@ -2067,7 +2067,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   userNameInput: {fileID: 2116840848}
   startButton: {fileID: 787702274}
-  quickJoinPanel: {fileID: 156959249}
+  lobbyJoinPanel: {fileID: 156959249}
+  roomJoinPanel: {fileID: 597491760}
 --- !u!4 &270238217
 Transform:
   m_ObjectHideFlags: 0
@@ -5838,9 +5839,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1927568266}
-        m_TargetAssemblyTypeName: LobbyScript, Assembly-CSharp
-        m_MethodName: CreateLobby
+      - m_Target: {fileID: 270238216}
+        m_TargetAssemblyTypeName: QuickJoinLobbyScript, Assembly-CSharp
+        m_MethodName: CreateOrJoinLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14378,19 +14379,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2086945179}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1927568266}
-        m_TargetAssemblyTypeName: LobbyScript, Assembly-CSharp
-        m_MethodName: CreateLobby
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2086945179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14943,5 +14932,5 @@ SceneRoots:
   - {fileID: 318704197}
   - {fileID: 645170759}
   - {fileID: 850030578}
-  - {fileID: 270238217}
   - {fileID: 1927568267}
+  - {fileID: 270238217}

@@ -18,7 +18,8 @@ public class QuickJoinLobbyScript : MonoBehaviour
 {
     public TMP_InputField userNameInput;
     public GameObject startButton;
-    public GameObject quickJoinPanel;
+    public GameObject lobbyJoinPanel;
+    public GameObject roomJoinPanel;
     private string playerName;
     string lobbyName = "MyLobby";
     private Lobby joinedLobby;
@@ -26,7 +27,8 @@ public class QuickJoinLobbyScript : MonoBehaviour
     public async void CreateOrJoinLobby()
     {
         startButton.SetActive(false);
-        quickJoinPanel.SetActive(false);
+        lobbyJoinPanel.SetActive(false);
+        roomJoinPanel.SetActive(true);
 
         playerName = userNameInput.GetComponent<TMP_InputField>().text;
         //joinedLobby = await QuickJoinLobby();
@@ -34,7 +36,8 @@ public class QuickJoinLobbyScript : MonoBehaviour
         if (joinedLobby == null)
         {
             startButton.SetActive(true);
-            quickJoinPanel.SetActive(true);
+            lobbyJoinPanel.SetActive(true);
+            roomJoinPanel.SetActive(false);
         }
     }
 
@@ -61,7 +64,9 @@ public class QuickJoinLobbyScript : MonoBehaviour
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
                 // Join the game room as a client
-                NetworkManager.Singleton.StartClient();
+
+                //NetworkManager.Singleton.StartClient();
+
                 return lobby;
             }
 
@@ -104,7 +109,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
     {
         try
         {
-            const int maxPlayers = 5;
+            const int maxPlayers = 2;
 
             // Create a relay allocation and generate a join code to share with the lobby
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
@@ -138,7 +143,8 @@ public class QuickJoinLobbyScript : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
             
             // Start the room immediately (or can wait for the lobby to fill up)
-            NetworkManager.Singleton.StartHost();
+
+            //NetworkManager.Singleton.StartHost();
 
             Debug.Log("Join code = " + joinCode);
             LobbyScript.Instance.PrintPlayers(lobby);
