@@ -21,7 +21,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
     public GameObject lobbyJoinPanel;
     public GameObject roomJoinPanel;
     private string playerName;
-    string lobbyName = "MyLobby";
+    string lobbyName = "QuickJoinLobby";
     private Lobby joinedLobby;
 
     public async void CreateOrJoinLobby()
@@ -33,12 +33,12 @@ public class QuickJoinLobbyScript : MonoBehaviour
         playerName = userNameInput.GetComponent<TMP_InputField>().text;
         //joinedLobby = await QuickJoinLobby();
         joinedLobby = await QuickJoinLobby() ?? await CreateLobby();
-        if (joinedLobby == null)
-        {
-            startButton.SetActive(true);
-            lobbyJoinPanel.SetActive(true);
-            roomJoinPanel.SetActive(false);
-        }
+        //if (joinedLobby == null)
+        //{
+        //   startButton.SetActive(true);
+        //    lobbyJoinPanel.SetActive(true);
+        //    roomJoinPanel.SetActive(false);
+        //}
     }
 
     private async Task<Lobby> QuickJoinLobby()
@@ -148,6 +148,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
 
             Debug.Log("Join code = " + joinCode);
             LobbyScript.Instance.PrintPlayers(lobby);
+            LobbyScript.Instance.UpdateRoomNameAndJoinCode(lobby);
             return lobby;
         }
         catch (Exception e)

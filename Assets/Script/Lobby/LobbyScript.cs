@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.Services.Relay;
+using Unity.Services.Relay.Models;
 using System.Net.Http.Headers;
+using Unity.Netcode.Transports.UTP;
+using Unity.Networking.Transport.Relay;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using TMPro;
 
 public class LobbyScript : Singleton<LobbyScript>
 {
@@ -12,6 +19,12 @@ public class LobbyScript : Singleton<LobbyScript>
 
     string playerName;
     private float lobbyUpdateTimer;
+
+    [SerializeField] TMP_Text roomNameText;
+    [SerializeField] TMP_Text joinCodeText;
+    [SerializeField] TMP_InputField lobbyNameInput;
+    [SerializeField] GameObject lobbyJoinPanel;
+    [SerializeField] GameObject roomJoinPanel;
 
     private void Start()
     {
@@ -40,10 +53,13 @@ public class LobbyScript : Singleton<LobbyScript>
 
     public async void CreateLobby()
     {
+
         try
         {
-            string lobbyName = "My lobby";
+            string lobbyName = lobbyNameInput.text;
             int maxPlayers = 2;
+            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
+            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             CreateLobbyOptions options = new CreateLobbyOptions
             {
                 IsPrivate = false,
@@ -57,7 +73,7 @@ public class LobbyScript : Singleton<LobbyScript>
                 },
                 Data = new Dictionary<string, DataObject>
                 {
-                    {"GameMode", new DataObject(DataObject.VisibilityOptions.Public, "DeathMatch")}
+                    {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, joinCode) }
                 }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
@@ -66,12 +82,14 @@ public class LobbyScript : Singleton<LobbyScript>
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
             Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers  + "," + lobby.Id + "," +  lobby.LobbyCode);
             PrintPlayers(hostLobby);
-        }catch(LobbyServiceException e)
+            UpdateRoomNameAndJoinCode(hostLobby);
+        }
+        catch(LobbyServiceException e)
         {
             Debug.Log(e);
         }
     }
-    private async void UpdateLobbyGameMode(string gameMode)
+    public async void UpdateLobbyGameMode(string gameMode)
     {
         try
         {
@@ -105,8 +123,8 @@ public class LobbyScript : Singleton<LobbyScript>
                     }
                 }
             };
-            Lobby joinedLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode, options);
-            await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode);
+            Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(lobbyCode, options);
+            joinedLobby = lobby;
             Debug.Log("Joined  by lobby code : " + lobbyCode);
             PrintPlayers(joinedLobby);
         }catch (LobbyServiceException e)
@@ -195,6 +213,14 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             Debug.Log(player.Id + " : " + player.Data["PlayerName"].Value);
         }
+    }
+
+    public void UpdateRoomNameAndJoinCode(Lobby lobby)
+    {
+        lobbyJoinPanel.SetActive(false);
+        roomJoinPanel.SetActive(true);
+        roomNameText.text = lobby.Name;
+        joinCodeText.text = "Join code : " + lobby.Data["JoinCodeKey"].Value;
     }
 
 }
