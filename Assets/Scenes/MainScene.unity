@@ -2669,7 +2669,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fc54275be4164c4b88a4be4970746ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userNameInput: {fileID: 2116840848}
+  playerNameInput: {fileID: 2116840848}
   startButton: {fileID: 787702274}
   lobbyJoinPanel: {fileID: 156959249}
   roomJoinPanel: {fileID: 597491760}
@@ -8869,7 +8869,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 0acd1b5da66c4b94d9251d4e79f89bc7, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 0
+    ConnectionApproval: 1
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30

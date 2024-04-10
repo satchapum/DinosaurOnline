@@ -15,8 +15,8 @@ using TMPro;
 
 public class LobbyScript : Singleton<LobbyScript>
 {
-    Lobby hostLobby;
-    private Lobby joinedLobby;
+    public Lobby hostLobby;
+    public Lobby joinedLobby;
     private string playerName;
     private float lobbyUpdateTimer;
 

@@ -15,11 +15,10 @@ using Unity.Networking.Transport.Relay;
 using TMPro;
 public class QuickJoinLobbyScript : MonoBehaviour
 {
-    public TMP_InputField userNameInput;
+    public TMP_InputField playerNameInput;
     public GameObject startButton;
     public GameObject lobbyJoinPanel;
     public GameObject roomJoinPanel;
-    private string playerName;
     string lobbyName = "QuickJoinLobby";
     private Lobby joinedLobby;
 
@@ -29,7 +28,6 @@ public class QuickJoinLobbyScript : MonoBehaviour
         lobbyJoinPanel.SetActive(false);
         roomJoinPanel.SetActive(true);
 
-        playerName = userNameInput.GetComponent<TMP_InputField>().text;
         //joinedLobby = await QuickJoinLobby();
         joinedLobby = await QuickJoinLobby() ?? await CreateLobby();
         if (joinedLobby == null)
@@ -118,12 +116,12 @@ public class QuickJoinLobbyScript : MonoBehaviour
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
             {
                 IsPrivate = false,
+
                 Player = new Player
                 {
                     Data = new Dictionary<string, PlayerDataObject>
                     {
-                        {"PlayerName",
-                            new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,playerName)},
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
                         //{"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 },
@@ -132,8 +130,10 @@ public class QuickJoinLobbyScript : MonoBehaviour
                     {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, joinCode) }
                 }
             };
-
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
+            Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers + "," + lobby.Id + "," + lobby.LobbyCode);
+            LobbyScript.Instance.hostLobby = lobby;
+            LobbyScript.Instance.joinedLobby = LobbyScript.Instance.hostLobby;
 
             // Send a heartbeat every 15 seconds to keep the room alive
             StartCoroutine(HeartBeatLobbyCoroutine(lobby.Id, 15));
