@@ -17,20 +17,16 @@ public class LobbyScript : Singleton<LobbyScript>
     Lobby hostLobby;
     private Lobby joinedLobby;
 
-    string playerName;
     private float lobbyUpdateTimer;
 
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text joinCodeText;
+    [SerializeField] TMP_Text playerNameText;
     [SerializeField] TMP_InputField lobbyNameInput;
+    [SerializeField] TMP_InputField playerNameInput;
     [SerializeField] GameObject lobbyJoinPanel;
     [SerializeField] GameObject roomJoinPanel;
 
-    private void Start()
-    {
-        playerName = "Myname" + Random.Range(1, 9999);
-        Debug.Log("Player name = " + playerName);
-    }
     private void Update()
     {
         HandleLobbyPollForUpdate();
@@ -68,7 +64,7 @@ public class LobbyScript : Singleton<LobbyScript>
                 {
                     Data = new Dictionary<string, PlayerDataObject>
                     {
-                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName)}
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)}
                     }
                 },
                 Data = new Dictionary<string, DataObject>
@@ -119,7 +115,7 @@ public class LobbyScript : Singleton<LobbyScript>
                 {
                     Data = new Dictionary<string, PlayerDataObject>
                     {
-                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName)}
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)}
                     }
                 }
             };
@@ -133,7 +129,7 @@ public class LobbyScript : Singleton<LobbyScript>
         }
     }
 
-    private async void QuickJoinLobby()
+    /*private async void QuickJoinLobby()
     {
         try
         {
@@ -144,7 +140,7 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             Debug.Log(e);
         }
-    }
+    }*/
     private static IEnumerator HeartbeatLobbyCoroutine(string lobbyId, float waitTimeSeconds)
     {
         var delay = new WaitForSecondsRealtime(waitTimeSeconds);
@@ -219,6 +215,13 @@ public class LobbyScript : Singleton<LobbyScript>
     {
         lobbyJoinPanel.SetActive(false);
         roomJoinPanel.SetActive(true);
+
+        foreach (Player player in lobby.Players)
+        {
+            playerNameText.text = "Player name : " + player.Data["PlayerName"].Value;
+        }
+
+
         roomNameText.text = lobby.Name;
         joinCodeText.text = "Join code : " + lobby.Data["JoinCodeKey"].Value;
     }
