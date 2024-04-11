@@ -34,8 +34,14 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] GameObject roomJoinPanel;
     [SerializeField] TMP_Dropdown characterSelect;
 
+    private void Start()
+    {
+        //var callbacks = new LobbyEventCallbacks();
+        //callbacks.LobbyChanged += OnLobbyChanged;
+    }
     private void Update()
     {
+
         if (joinedLobby != null)
         {
             if (joinedLobby.Players.Count == 2)
@@ -46,25 +52,34 @@ public class LobbyScript : Singleton<LobbyScript>
 
         HandleLobbyPollForUpdate();
     }
-
     private async void HandleLobbyPollForUpdate()
     {
-        if (joinedLobby != null)
+        
+        try
         {
-            lobbyUpdateTimer -= Time.deltaTime;
-            if (lobbyUpdateTimer < 0f)
+            if (joinedLobby != null)
             {
-                float lobbyUpdateTimerMax = 1.1f;
-                lobbyUpdateTimer = lobbyUpdateTimerMax;
-                Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
-                joinedLobby = lobby;
+                lobbyUpdateTimer -= Time.deltaTime;
+                if (lobbyUpdateTimer < 0f)
+                {
+                    float lobbyUpdateTimerMax = 1.1f;
+                    lobbyUpdateTimer = lobbyUpdateTimerMax;
+                    Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+                    joinedLobby = lobby;
+                }
             }
         }
+        catch
+        {
+            lobbyJoinPanel.SetActive(true);
+            roomJoinPanel.SetActive(false);
+            joinedLobby = null;
+        }
+        
     }
 
     public async void CreateLobby()
     {
-
         try
         {
             string lobbyName = lobbyNameInput.text;
@@ -168,6 +183,126 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
             yield return delay;
+        }
+    }
+    private void OnLobbyChanged(ILobbyChanges changes)
+    {
+        changes.ApplyToLobby(joinedLobby);
+        if (changes.LobbyDeleted)
+        {
+            Debug.Log("Somethingchange");
+            LeaveRoom();
+        }
+        // Refresh the UI in some way
+    }
+    public async void KickPlayer()
+    {
+        try
+        {
+            for (int i = 1; i < joinedLobby.Players.Count; i++)
+            {
+                string playerId = joinedLobby.Players[i].Id;
+                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
+
+            }
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    public async void LeaveRoom()
+    {
+        try
+        {
+            //Ensure you sign-in before calling Authentication Instance
+            //See IAuthenticationService interface
+            string playerId = AuthenticationService.Instance.PlayerId;
+            if (playerId == hostLobby.Players[0].Id)
+            {
+                lobbyJoinPanel.SetActive(true);
+                roomJoinPanel.SetActive(false);
+                
+                if (hostLobby.Players.Count == 2)
+                {
+                    KickPlayer();
+                }
+                DeleteLobby();
+                /*if (joinedLobby.Players.Count == 2)
+                {
+                    foreach (Player player in hostLobby.Players)
+                    {
+                        Debug.Log(player.Data["PlayerName"].Value);
+                    }
+                    MigrateLobbyHost();
+                }
+                else
+                {
+                    lobbyJoinPanel.SetActive(true);
+                    roomJoinPanel.SetActive(false);
+                    DeleteLobby();
+                    return;
+                }
+                foreach (Player player in hostLobby.Players)
+                {
+                    if (player.Id == AuthenticationService.Instance.PlayerId)
+                    {
+                        Debug.Log("Player Leave : " + player.Data["PlayerName"].Value);
+                    }
+                }
+
+                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);*/
+
+            }
+            else
+            {
+                foreach (Player player in hostLobby.Players)
+                {
+                    if (player.Id == AuthenticationService.Instance.PlayerId)
+                    {
+                        Debug.Log("Player Leave : " + player.Data["PlayerName"].Value);
+                    }
+                }
+                lobbyJoinPanel.SetActive(true);
+                roomJoinPanel.SetActive(false);
+                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
+                joinedLobby = null;
+            }
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    private async void DeleteLobby()
+    {
+        try
+        {
+            await LobbyService.Instance.DeleteLobbyAsync(joinedLobby.Id);
+            joinedLobby = null;
+            Debug.Log("Delete lobby");
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    public async void MigrateLobbyHost()
+    {
+        try
+        {
+
+            hostLobby = await Lobbies.Instance.UpdateLobbyAsync(hostLobby.Id, new UpdateLobbyOptions
+            {
+                HostId = hostLobby.Players[0].Id
+            });
+            joinedLobby = null;
+            PrintPlayers(hostLobby);
+            Debug.Log("Change host");
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
         }
     }
 
