@@ -1851,7 +1851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 224130951485110974, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.000030517578
       objectReference: {fileID: 0}
     - target: {fileID: 224166536479716514, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3858,7 +3858,7 @@ GameObject:
   - component: {fileID: 357626461}
   m_Layer: 5
   m_Name: LobbyListName
-  m_TagString: Untagged
+  m_TagString: LobbyListName
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4005,7 +4005,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 373886110}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1927568266}
+        m_TargetAssemblyTypeName: LobbyScript, Assembly-CSharp
+        m_MethodName: FindRandomLobby
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &373886110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10272,6 +10284,7 @@ GameObject:
   - component: {fileID: 1350059754}
   - component: {fileID: 1350059753}
   - component: {fileID: 1350059752}
+  - component: {fileID: 1350059755}
   m_Layer: 5
   m_Name: Join Button
   m_TagString: Untagged
@@ -10342,7 +10355,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1350059753}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1927568266}
+        m_TargetAssemblyTypeName: LobbyScript, Assembly-CSharp
+        m_MethodName: JoinLobbyById
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1350059750}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1350059753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10381,6 +10406,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1350059750}
   m_CullTransparentMesh: 1
+--- !u!114 &1350059755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1350059750}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4688ed0d880a5d44c91af9f23f96e1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RoomId: 
 --- !u!1 &1361822705
 GameObject:
   m_ObjectHideFlags: 0
@@ -14492,6 +14530,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5fece22e4e6e584ab6549ffe187436a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 118344033}
+  timeCount: 0
   roomNameText: {fileID: 1953939662}
   joinCodeText: {fileID: 1400722180}
   playerNameText: {fileID: 299144817}
@@ -14504,6 +14544,7 @@ MonoBehaviour:
   lobbyJoinPanel: {fileID: 156959249}
   roomJoinPanel: {fileID: 597491760}
   characterSelect: {fileID: 1615024895}
+  lobbyPrefab: {fileID: 357626459}
 --- !u!4 &1927568267
 Transform:
   m_ObjectHideFlags: 0

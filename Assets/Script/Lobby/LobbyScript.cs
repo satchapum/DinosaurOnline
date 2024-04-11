@@ -12,13 +12,18 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using System.Linq;
 using TMPro;
+using System.Threading.Tasks;
 
 public class LobbyScript : Singleton<LobbyScript>
 {
     public Lobby hostLobby;
     public Lobby joinedLobby;
+    public GameObject parent;
     private string playerName;
     private float lobbyUpdateTimer;
+    private float currentLobbyCount;
+    private float oldLobbyCount;
+    public float timeCount;
 
     [Header("Get Gameobject")]
     [SerializeField] TMP_Text roomNameText;
@@ -33,24 +38,152 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] GameObject lobbyJoinPanel;
     [SerializeField] GameObject roomJoinPanel;
     [SerializeField] TMP_Dropdown characterSelect;
+    [SerializeField] GameObject lobbyPrefab;
 
     private void Start()
     {
+        timeCount = 0;
+        oldLobbyCount = 0;
+        currentLobbyCount = 0;
         //var callbacks = new LobbyEventCallbacks();
         //callbacks.LobbyChanged += OnLobbyChanged;
     }
     private void Update()
     {
-
+        timeCount += Time.deltaTime;
         if (joinedLobby != null)
         {
             if (joinedLobby.Players.Count == 2)
             {
                 updatePlayerListName(joinedLobby);
             }
+            else if (joinedLobby.Players.Count == 1)
+            {
+                updatePlayerListName(joinedLobby);
+            }
+        }
+
+        if (oldLobbyCount == currentLobbyCount && timeCount >= 5 && joinedLobby == null)
+        {
+            UpdateLobbyCount();
+            timeCount = 0;
+        }
+        else if(timeCount >= 5 && joinedLobby == null)
+        {
+            oldLobbyCount = currentLobbyCount;
+            timeCount = 0;
+            FindAllLobby();
         }
 
         HandleLobbyPollForUpdate();
+    }
+    private async void UpdateLobbyCount()
+    {
+        try
+        {
+            QueryLobbiesOptions queryLobbiesOptions = new QueryLobbiesOptions
+            {
+                Filters = new List<QueryFilter>
+                {
+                    new QueryFilter(QueryFilter.FieldOptions.AvailableSlots,"0",QueryFilter.OpOptions.GT)
+                }
+            };
+            QueryResponse queryResponse = await LobbyService.Instance.QueryLobbiesAsync(queryLobbiesOptions);
+            Debug.Log("Lobbies found: " + queryResponse.Results.Count);
+            currentLobbyCount = queryResponse.Results.Count;
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    public async void FindAllLobby()
+    {
+        try
+        {
+            int numberOflistObject = 0;
+            //List<GameObject> allListLobbyRoomGameObject = new List<GameObject>();
+            foreach (Transform tr in parent.GetComponentsInChildren<Transform>())
+            {
+                if (numberOflistObject == 0)
+                {
+                    numberOflistObject++;
+                }
+                else
+                {
+                    Destroy(tr.gameObject);
+                }
+
+            }
+
+            QueryLobbiesOptions options = new QueryLobbiesOptions();
+            options.Count = 25;
+
+            // Filter for open lobbies only
+            options.Filters = new List<QueryFilter>()
+            {
+                new QueryFilter(
+                    field: QueryFilter.FieldOptions.AvailableSlots,
+                    op: QueryFilter.OpOptions.GT,
+                    value: "0")
+            };
+
+            // Order by newest lobbies first
+            options.Order = new List<QueryOrder>()
+            {
+                new QueryOrder(
+                    asc: false,
+                    field: QueryOrder.FieldOptions.Created)
+            };
+
+            QueryResponse lobbies = await Lobbies.Instance.QueryLobbiesAsync(options);
+
+            foreach (Lobby lobby in lobbies.Results)
+            {
+                Debug.Log("lobby id is : " + lobby.Id);
+                GameObject createLobbyPrefab = Instantiate(lobbyPrefab, lobbyPrefab.transform.parent);
+                createLobbyPrefab.GetComponentsInChildren<TMP_Text>()[0].text = lobby.Name;
+                createLobbyPrefab.GetComponentsInChildren<TMP_Text>()[1].text = lobby.Players.Count + "/" + lobby.Players.Capacity;
+                JoinButtonScript setJoinButtonRoomId  = createLobbyPrefab.GetComponentsInChildren<JoinButtonScript>()[0];
+                setJoinButtonRoomId.SetRoomId(lobby.Id);
+                createLobbyPrefab.SetActive(true);
+            }
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+
+    public async void JoinLobbyById(GameObject joinButtonScriptGameObject)
+    {
+        try
+        {
+            string roomId = joinButtonScriptGameObject.GetComponent<JoinButtonScript>().RoomId;
+            JoinLobbyByIdOptions options = new JoinLobbyByIdOptions
+            {
+                Player = new Player
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                    }
+                }
+            };
+            Lobby lobby = await Lobbies.Instance.JoinLobbyByIdAsync(roomId, options);
+            hostLobby = lobby;
+            joinedLobby = hostLobby;
+            Debug.Log("Joined by lobby code : " + joinCodeIdInput.text);
+            UpdateRoomNameAndJoinCode(joinedLobby);
+            PrintPlayers(joinedLobby);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+
+
     }
     private async void HandleLobbyPollForUpdate()
     {
@@ -153,7 +286,8 @@ public class LobbyScript : Singleton<LobbyScript>
                 }
             };
             Lobby lobby = await Lobbies.Instance.JoinLobbyByCodeAsync(joinCodeIdInput.text, options);
-            joinedLobby = lobby;
+            hostLobby = lobby;
+            joinedLobby = hostLobby;
             Debug.Log("Joined by lobby code : " + joinCodeIdInput.text);
             UpdateRoomNameAndJoinCode(joinedLobby);
             PrintPlayers(joinedLobby);
@@ -163,18 +297,6 @@ public class LobbyScript : Singleton<LobbyScript>
         }
     }
 
-    /*private async void QuickJoinLobby()
-    {
-        try
-        {
-            Lobby lobby = await Lobbies.Instance.QuickJoinLobbyAsync();
-            Debug.Log(lobby.Name + "," + lobby.AvailableSlots);
-        }
-        catch (LobbyServiceException e)
-        {
-            Debug.Log(e);
-        }
-    }*/
     private static IEnumerator HeartbeatLobbyCoroutine(string lobbyId, float waitTimeSeconds)
     {
         var delay = new WaitForSecondsRealtime(waitTimeSeconds);
@@ -193,7 +315,6 @@ public class LobbyScript : Singleton<LobbyScript>
             Debug.Log("Somethingchange");
             LeaveRoom();
         }
-        // Refresh the UI in some way
     }
     public async void KickPlayer()
     {
@@ -228,31 +349,6 @@ public class LobbyScript : Singleton<LobbyScript>
                     KickPlayer();
                 }
                 DeleteLobby();
-                /*if (joinedLobby.Players.Count == 2)
-                {
-                    foreach (Player player in hostLobby.Players)
-                    {
-                        Debug.Log(player.Data["PlayerName"].Value);
-                    }
-                    MigrateLobbyHost();
-                }
-                else
-                {
-                    lobbyJoinPanel.SetActive(true);
-                    roomJoinPanel.SetActive(false);
-                    DeleteLobby();
-                    return;
-                }
-                foreach (Player player in hostLobby.Players)
-                {
-                    if (player.Id == AuthenticationService.Instance.PlayerId)
-                    {
-                        Debug.Log("Player Leave : " + player.Data["PlayerName"].Value);
-                    }
-                }
-
-                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);*/
-
             }
             else
             {
@@ -305,56 +401,6 @@ public class LobbyScript : Singleton<LobbyScript>
             Debug.Log(e);
         }
     }
-
-    private async void ListLobbies()
-    {
-        try
-        {
-            QueryLobbiesOptions options = new QueryLobbiesOptions();
-            options.Count = 25;
-
-            // Filter for open lobbies only
-            options.Filters = new List<QueryFilter>()
-            {
-                new QueryFilter(
-                    field: QueryFilter.FieldOptions.AvailableSlots,
-                    op: QueryFilter.OpOptions.GT,
-                    value: "0")
-            };
-
-            // Order by newest lobbies first
-            options.Order = new List<QueryOrder>()
-            {
-                new QueryOrder(
-                    asc: false,
-                    field: QueryOrder.FieldOptions.Created)
-            };
-
-            QueryResponse lobbies = await Lobbies.Instance.QueryLobbiesAsync();
-            Debug.Log("Lobbies found : " + lobbies.Results.Count);
-            foreach(Lobby lobby in lobbies.Results)
-            {
-                Debug.Log(lobby.Name + " , " + lobby.MaxPlayers + " , " + lobby.Data["GameMode"].Value);
-            }
-        }catch(LobbyServiceException e)
-        {
-            Debug.Log(e);
-        }
-
-    }
-
-    /*private async void JoinLobby()
-    {
-        try
-        {
-            QueryResponse lobbies = await LobbyService.Instance.QueryLobbiesAsync();
-            await Lobbies.Instance.JoinLobbyByIdAsync(lobbies.Results[0].Id);
-            Debug.Log(lobbies.Results[0].Name + " , " + lobbies.Results[0].AvailableSlots);
-        }catch(LobbyServiceException e)
-        {
-            Debug.Log(e);   
-        }
-    }*/
 
     public void PrintPlayers(Lobby lobby)
     {
@@ -420,15 +466,18 @@ public class LobbyScript : Singleton<LobbyScript>
         int numberOfPlayer = 0; 
         foreach (Player player in lobby.Players)
         {
-            if (numberOfPlayer == 0)
+            if (player.Data != null)
             {
-                player_1_NameText.text = player.Data["PlayerName"].Value;
-                numberOfPlayer++;
-            }
-            else
-            {
-                player_2_NameText.text = player.Data["PlayerName"].Value;
-                numberOfPlayer++;
+                if (numberOfPlayer == 0)
+                {
+                    player_1_NameText.text = player.Data["PlayerName"].Value;
+                    numberOfPlayer++;
+                }
+                else
+                {
+                    player_2_NameText.text = player.Data["PlayerName"].Value;
+                    numberOfPlayer++;
+                }
             }
         }
         if (lobby.Players.Count == 0)
