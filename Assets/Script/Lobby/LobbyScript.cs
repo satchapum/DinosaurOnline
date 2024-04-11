@@ -20,9 +20,12 @@ public class LobbyScript : Singleton<LobbyScript>
     private string playerName;
     private float lobbyUpdateTimer;
 
+    [Header("Get Gameobject")]
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text joinCodeText;
     [SerializeField] TMP_Text playerNameText;
+    [SerializeField] TMP_Text player_1_NameText;
+    [SerializeField] TMP_Text player_2_NameText;
     [SerializeField] TMP_InputField joinCodeIdInput;
     [SerializeField] TMP_InputField lobbyNameInput;
     [SerializeField] TMP_InputField playerNameInput;
@@ -33,6 +36,14 @@ public class LobbyScript : Singleton<LobbyScript>
 
     private void Update()
     {
+        if (joinedLobby != null)
+        {
+            if (joinedLobby.Players.Count == 2)
+            {
+                updatePlayerListName(joinedLobby);
+            }
+        }
+
         HandleLobbyPollForUpdate();
     }
 
@@ -212,7 +223,7 @@ public class LobbyScript : Singleton<LobbyScript>
 
     public void PrintPlayers(Lobby lobby)
     {
-        Debug.Log("Lobby : " + lobby.Name + " / " + lobby.Data["JoinCodeKey"].Value);
+        //Debug.Log("Lobby : " + lobby.Name + " / " + lobby.Data["JoinCodeKey"].Value);
         foreach(Player player in lobby.Players)
         {
             Debug.Log(player.Id + " : " + player.Data["PlayerName"].Value);
@@ -231,7 +242,7 @@ public class LobbyScript : Singleton<LobbyScript>
                 playerNameText.text = "Player name : " + playerNameInput.text;
             }
         }
-
+        updatePlayerListName(lobby);
         roomNameText.text = lobby.Name;
         joinCodeText.text = "Join code : " + lobby.LobbyCode;
     }
@@ -251,6 +262,7 @@ public class LobbyScript : Singleton<LobbyScript>
             });
             PrintPlayers(joinedLobby);
             UpdatePlayerName(joinedLobby);
+            updatePlayerListName(joinedLobby);
         }
         catch ( LobbyServiceException e)
         {
@@ -266,6 +278,32 @@ public class LobbyScript : Singleton<LobbyScript>
             {
                 playerNameText.text = "Player name : " + player.Data["PlayerName"].Value;
             }
+        }
+    }
+    public void updatePlayerListName(Lobby lobby)
+    {
+        int numberOfPlayer = 0; 
+        foreach (Player player in lobby.Players)
+        {
+            if (numberOfPlayer == 0)
+            {
+                player_1_NameText.text = player.Data["PlayerName"].Value;
+                numberOfPlayer++;
+            }
+            else
+            {
+                player_2_NameText.text = player.Data["PlayerName"].Value;
+                numberOfPlayer++;
+            }
+        }
+        if (lobby.Players.Count == 0)
+        {
+            player_1_NameText.text = "Empty Slot";
+            player_2_NameText.text = "Empty Slot";
+        }
+        else if (lobby.Players.Count == 1)
+        {
+            player_2_NameText.text = "Empty Slot";
         }
     }
 }

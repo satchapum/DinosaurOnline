@@ -4219,7 +4219,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Name
+  m_text: Empty Slot
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4559,7 +4559,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Name
+  m_text: Empty Slot
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8869,7 +8869,7 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 0acd1b5da66c4b94d9251d4e79f89bc7, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
-    ConnectionApproval: 1
+    ConnectionApproval: 0
     ConnectionData: 
     EnableTimeResync: 0
     TimeResyncInterval: 30
@@ -14471,6 +14471,8 @@ MonoBehaviour:
   roomNameText: {fileID: 1953939662}
   joinCodeText: {fileID: 1400722180}
   playerNameText: {fileID: 299144817}
+  player_1_NameText: {fileID: 475470968}
+  player_2_NameText: {fileID: 409210790}
   joinCodeIdInput: {fileID: 1478533405}
   lobbyNameInput: {fileID: 1915845509}
   playerNameInput: {fileID: 2116840848}

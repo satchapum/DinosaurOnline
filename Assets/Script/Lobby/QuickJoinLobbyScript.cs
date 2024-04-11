@@ -29,7 +29,13 @@ public class QuickJoinLobbyScript : MonoBehaviour
         roomJoinPanel.SetActive(true);*/
 
         //joinedLobby = await QuickJoinLobby();
-        joinedLobby = await QuickJoinLobby() ?? await CreateLobby();
+        joinedLobby = await QuickJoinLobbyNoFinding() ?? await CreateLobby();
+
+        LobbyScript.Instance.hostLobby = joinedLobby;
+        LobbyScript.Instance.joinedLobby = LobbyScript.Instance.hostLobby;
+        LobbyScript.Instance.PrintPlayers(joinedLobby);
+        LobbyScript.Instance.UpdateRoomNameAndJoinCode(joinedLobby);
+
         if (joinedLobby == null)
         {
            startButton.SetActive(true);
@@ -74,6 +80,43 @@ public class QuickJoinLobbyScript : MonoBehaviour
             Debug.Log("No lobbies available via quick join");
             return null;
         }
+
+    }
+    private async Task<Lobby> QuickJoinLobbyNoFinding()
+    {
+        try
+        {
+            // Quick-join a random lobby with a maximum capacity of 10 or more players.
+            QuickJoinLobbyOptions options = new QuickJoinLobbyOptions()
+            {
+                Player = new Player
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                    {
+                        {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                    }
+                }
+            };
+
+            options.Filter = new List<QueryFilter>()
+            {
+                new QueryFilter(
+                field: QueryFilter.FieldOptions.MaxPlayers,
+                op: QueryFilter.OpOptions.GE,
+                value: "0")
+            };
+            var lobby = await LobbyService.Instance.QuickJoinLobbyAsync(options);
+
+            // ...
+            return lobby;
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log("No lobbies available via quick join");
+            return null;
+        }
+
     }
     [ContextMenu("FindRandomLobby")]
     private async Task<Lobby> FindRandomLobby()
@@ -125,30 +168,25 @@ public class QuickJoinLobbyScript : MonoBehaviour
                         {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
                     }
                 },
-                Data = new Dictionary<string, DataObject>
+                /*Data = new Dictionary<string, DataObject>
                 {
                     {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, joinCode) }
-                }
+                }*/
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
             Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers + "," + lobby.Id + "," + lobby.LobbyCode);
-            LobbyScript.Instance.hostLobby = lobby;
-            LobbyScript.Instance.joinedLobby = LobbyScript.Instance.hostLobby;
 
             // Send a heartbeat every 15 seconds to keep the room alive
             StartCoroutine(HeartBeatLobbyCoroutine(lobby.Id, 15));
 
             // Set the game room to use the relay allocation
-            RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-            
+            //RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
+            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
             // Start the room immediately (or can wait for the lobby to fill up)
 
             //NetworkManager.Singleton.StartHost();
-
             Debug.Log("Join code = " + lobby.LobbyCode);
-            LobbyScript.Instance.PrintPlayers(lobby);
-            LobbyScript.Instance.UpdateRoomNameAndJoinCode(lobby);
             return lobby;
         }
         catch (Exception e)
