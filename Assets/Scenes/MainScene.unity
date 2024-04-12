@@ -786,7 +786,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &112323660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -953,7 +953,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &118976323
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3554,7 +3554,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &344567713
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4009,7 +4009,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1927568266}
         m_TargetAssemblyTypeName: LobbyScript, Assembly-CSharp
-        m_MethodName: FindRandomLobby
+        m_MethodName: FindAllLobby
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6532,6 +6532,8 @@ MonoBehaviour:
   - {fileID: 2100000, guid: abc5a32797ba34f50bd8c932704cd183, type: 2}
   - {fileID: 2100000, guid: 3be4ce923a897214090e3b987a36ec8e, type: 2}
   playerList: []
+  lobbyScript: {fileID: 1927568266}
+  timeText: {fileID: 344567712}
 --- !u!114 &743086149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11479,7 +11481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1414914635
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13660,7 +13662,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1625706697
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14960,6 +14962,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 118344033}
+  playerName: 
+  playerCharacter: 
   timeCount: 0
   IsGameStart: 0
   roomNameText: {fileID: 1953939662}

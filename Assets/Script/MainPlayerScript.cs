@@ -13,6 +13,7 @@ public class MainPlayerScript : NetworkBehaviour
     private TMP_Text nameLabel;
 
     private LoginManagerScript loginManagerScript;
+    private LobbyScript lobbyScript;
 
     private NetworkVariable<int> posX = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -69,11 +70,18 @@ public class MainPlayerScript : NetworkBehaviour
         if (IsOwner)
         {
             loginManagerScript = GameObject.FindAnyObjectByType<LoginManagerScript>();
-            if(loginManagerScript != null)
+            lobbyScript = GameObject.FindObjectOfType<LobbyScript>();
+            if (loginManagerScript != null)
             {
                 string name = loginManagerScript.userNameInputField.text;
                 if (IsOwnedByServer) { playerNameA.Value = name; }
                 else{ playerNameB.Value = name; }
+            }
+            else if (lobbyScript != null)
+            {
+                string name = lobbyScript.playerName;
+                if (IsOwnedByServer) { playerNameA.Value = name; }
+                else { playerNameB.Value = name; }
             }
         }
     }

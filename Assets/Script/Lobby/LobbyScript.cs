@@ -21,7 +21,10 @@ public class LobbyScript : Singleton<LobbyScript>
     public Lobby hostLobby;
     public Lobby joinedLobby;
     public GameObject parent;
-    private string playerName;
+
+    public string playerName;
+    public string playerCharacter;
+
     private float lobbyUpdateTimer;
     private float currentLobbyCount;
     private float oldLobbyCount;
@@ -67,6 +70,7 @@ public class LobbyScript : Singleton<LobbyScript>
     }
     private void Update()
     {
+
         timeCount += Time.deltaTime;
         if (joinedLobby != null)
         {
@@ -100,7 +104,7 @@ public class LobbyScript : Singleton<LobbyScript>
         }
         if (joinedLobby != null) 
         {
-
+            UpdatePlayerNameAndCharacterForOtherScript();
             if (joinedLobby.Data["JoinCodeKey"].Value != "0" && IsGameStart == false)
             {
                 IsGameStart = true;
@@ -109,6 +113,17 @@ public class LobbyScript : Singleton<LobbyScript>
         }
 
         HandleLobbyPollForUpdate();
+    }
+    void UpdatePlayerNameAndCharacterForOtherScript()
+    {
+        foreach (Player player in joinedLobby.Players)
+        {
+            if (player.Id == AuthenticationService.Instance.PlayerId)
+            {
+                playerName = player.Data["PlayerName"].Value;
+                playerCharacter = player.Data["PlayerCharacterSelect"].Value;
+            }
+        }
     }
     public async void HostStartButton()
     {
@@ -147,7 +162,8 @@ public class LobbyScript : Singleton<LobbyScript>
                     hostLobby = lobby;
                     joinedLobby = hostLobby;
                     IsGameStart = true;
-                    NetworkManager.Singleton.StartHost();
+                    Debug.Log(playerCharacter);
+                    loginManagerScript.Host();
                 }
                 else
                 {
@@ -169,7 +185,8 @@ public class LobbyScript : Singleton<LobbyScript>
         JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinedLobby.Data["JoinCodeKey"].Value);
         RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-        NetworkManager.Singleton.StartClient();
+        Debug.Log(playerCharacter);
+        loginManagerScript.Client();
     }
     private async void UpdateLobbyCount()
     {
@@ -528,7 +545,7 @@ public class LobbyScript : Singleton<LobbyScript>
     {
         try
         {
-            playerName = playerNameInput.text;
+            playerName = playerNameChangeInput.text;
             Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
                 AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
             {

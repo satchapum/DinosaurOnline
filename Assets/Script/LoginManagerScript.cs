@@ -38,6 +38,8 @@ public class LoginManagerScript : NetworkBehaviour
     [SerializeField] public List<Material> materialList;
 
     [SerializeField] GameObject[] playerList;
+    [SerializeField] LobbyScript lobbyScript;
+    [SerializeField] GameObject timeText;
 
     public bool SetIsApproveConnection()
     {
@@ -60,15 +62,16 @@ public class LoginManagerScript : NetworkBehaviour
             healthUI.SetActive(true);
             loginPanel.SetActive(false);
             leaveButton.SetActive(true);
+            timeText.SetActive(true);
             //scorePanel.SetActive(true);
         }
-        else
+        /*else
         {
             healthUI.SetActive(false);
             loginPanel.SetActive(true);
             leaveButton.SetActive(false);
             //scorePanel.SetActive(false);
-        }
+        }*/
     }
 
     private void HandleClientDisconnect(ulong clientId)
@@ -140,20 +143,20 @@ public class LoginManagerScript : NetworkBehaviour
         bool isApprove = false;
         int characterPrefabIndex = 0;
 
-        bool nameCheck = false;
+        //bool nameCheck = false;
         if (byteLength > 0)
         {
             string combinedString = System.Text.Encoding.ASCII.GetString(connectionData,0,byteLength);
             string[] extractedString = HelperScript.ExtractStrings(combinedString);
 
-            string hostData = userNameInputField.GetComponent<TMP_InputField>().text;
-            nameCheck = NameApproveConnection(extractedString[0], hostData);
+            //string hostData = lobbyScript.playerName;
+            //nameCheck = NameApproveConnection(extractedString[0], hostData);
 
             for (int i = 0; i < extractedString.Length; i++)
             {
                 if (i == 0)
                 {
-                    string clientData = extractedString[i];
+                    /*string clientData = extractedString[i];
                     isApprove = NameApproveConnection(clientData, hostData);
                     if (nameCheck == true)
                     {
@@ -162,11 +165,12 @@ public class LoginManagerScript : NetworkBehaviour
                     else if (nameCheck == false)
                     {
                         isApprove = false;
-                    }
+                    }*/
                 }
                 else if (i == 1)
                 {
                     characterPrefabIndex = int.Parse(extractedString[i]);
+                    isApprove = true;
                 }
             }
         }
@@ -254,16 +258,18 @@ public class LoginManagerScript : NetworkBehaviour
     }
     public async void Client()
     {
-        joinCode = joinCodeInputField.GetComponent<TMP_InputField>().text;
+        /*joinCode = joinCodeInputField.GetComponent<TMP_InputField>().text;
         if (RelayManagerScript.Instance.IsRelayEnabled && !string.IsNullOrEmpty(joinCode))
         {
             await RelayManagerScript.Instance.JoinRelay(joinCode);
-        }
-        string username = userNameInputField.GetComponent<TMP_InputField>().text;
+        }*/
+        string username = lobbyScript.playerName;
         string characterId = setInputSkinData().ToString();
+        Debug.Log(characterId);
         string[] inputFields = { username, characterId };
         string clientData = HelperScript.CombineStrings(inputFields);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(clientData);
+        NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartClient();
 
         Debug.Log("Start client");
@@ -291,11 +297,11 @@ public class LoginManagerScript : NetworkBehaviour
     public int setInputSkinData()
     {
 
-        if (dropdown_TMP.GetComponent<TMP_Dropdown>().value == 0)
+        if (lobbyScript.playerCharacter == "Dino")
         {
             return 0;
         }
-        if (dropdown_TMP.GetComponent<TMP_Dropdown>().value == 1)
+        if (lobbyScript.playerCharacter == "God")
         {
             return 1;
         }
