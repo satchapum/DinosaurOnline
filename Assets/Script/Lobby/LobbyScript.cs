@@ -26,6 +26,8 @@ public class LobbyScript : Singleton<LobbyScript>
     private float currentLobbyCount;
     private float oldLobbyCount;
     public float timeCount;
+
+    //Dontforgotthis*********************************************
     public bool IsGameStart;
 
     [Header("Get Gameobject")]
@@ -47,6 +49,7 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] TMP_Text player_1_Status;
     [SerializeField] TMP_Text player_2_Status;
     [SerializeField] LoginManagerScript loginManagerScript;
+    [SerializeField] GameObject StartButton;
    
     [Header("Image")]
     [SerializeField] Sprite dinoImage;
@@ -67,6 +70,7 @@ public class LobbyScript : Singleton<LobbyScript>
         timeCount += Time.deltaTime;
         if (joinedLobby != null)
         {
+            HostStartButton();
             if (joinedLobby.Players.Count == 2)
             {
                 UpdateCharacterIcon(joinedLobby);
@@ -103,9 +107,22 @@ public class LobbyScript : Singleton<LobbyScript>
                 StartGame();
             }
         }
-        
 
         HandleLobbyPollForUpdate();
+    }
+    public async void HostStartButton()
+    {
+        foreach (Player player in joinedLobby.Players)
+        {
+            if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == hostLobby.Players[0].Id)
+            {
+                StartButton.SetActive(true);
+            }
+            else if(player.Id == AuthenticationService.Instance.PlayerId)
+            {
+                StartButton.SetActive(false);
+            }
+        }
     }
     public async void StartGame()
     {

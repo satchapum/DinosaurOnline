@@ -1851,7 +1851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 224130951485110974, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224166536479716514, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchorMax.y
@@ -14961,6 +14961,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parent: {fileID: 118344033}
   timeCount: 0
+  IsGameStart: 0
   roomNameText: {fileID: 1953939662}
   joinCodeText: {fileID: 1400722180}
   playerNameText: {fileID: 299144817}
@@ -14978,7 +14979,8 @@ MonoBehaviour:
   playerCharacterImage_2: {fileID: 1660162589}
   player_1_Status: {fileID: 955350486}
   player_2_Status: {fileID: 1183769928}
-  loginManagerScript: {fileID: 0}
+  loginManagerScript: {fileID: 743086148}
+  StartButton: {fileID: 2115220016}
   dinoImage: {fileID: 21300000, guid: 977a43ff609fb8a46b95b69870e07c57, type: 3}
   godImage: {fileID: 21300000, guid: a143c6c9e83522a4cabf93e05029582c, type: 3}
 --- !u!4 &1927568267

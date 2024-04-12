@@ -120,10 +120,10 @@ public class LoginManagerScript : NetworkBehaviour
 
     public async void Host()
     {
-        if (RelayManagerScript.Instance.IsRelayEnabled)
+        /*if (RelayManagerScript.Instance.IsRelayEnabled)
         {
             await RelayManagerScript.Instance.CreateRelay();
-        }
+        }*/
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartHost();
     }
