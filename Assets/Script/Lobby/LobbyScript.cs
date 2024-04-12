@@ -14,6 +14,7 @@ using System.Linq;
 using TMPro;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 public class LobbyScript : Singleton<LobbyScript>
 {
@@ -25,6 +26,7 @@ public class LobbyScript : Singleton<LobbyScript>
     private float currentLobbyCount;
     private float oldLobbyCount;
     public float timeCount;
+    public bool IsGameStart;
 
     [Header("Get Gameobject")]
     [SerializeField] TMP_Text roomNameText;
@@ -42,13 +44,17 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] GameObject lobbyPrefab;
     [SerializeField] Image playerCharacterImage_1;
     [SerializeField] Image playerCharacterImage_2;
-
+    [SerializeField] TMP_Text player_1_Status;
+    [SerializeField] TMP_Text player_2_Status;
+    [SerializeField] LoginManagerScript loginManagerScript;
+   
     [Header("Image")]
     [SerializeField] Sprite dinoImage;
     [SerializeField] Sprite godImage;
 
     private void Start()
     {
+        IsGameStart = false;
         timeCount = 0;
         oldLobbyCount = 0;
         currentLobbyCount = 0;
@@ -64,12 +70,14 @@ public class LobbyScript : Singleton<LobbyScript>
             if (joinedLobby.Players.Count == 2)
             {
                 UpdateCharacterIcon(joinedLobby);
+                updatePlayerListStatus(joinedLobby);
                 updatePlayerListName(joinedLobby);
                 changeNameAndImageInlobbyToEmpty();
             }
             else if (joinedLobby.Players.Count == 1)
             {
                 UpdateCharacterIcon(joinedLobby);
+                updatePlayerListStatus(joinedLobby);
                 updatePlayerListName(joinedLobby);
                 changeNameAndImageInlobbyToEmpty();
             }
@@ -86,8 +94,65 @@ public class LobbyScript : Singleton<LobbyScript>
             timeCount = 0;
             FindAllLobby();
         }
+        if (joinedLobby != null) 
+        {
+
+            if (joinedLobby.Data["JoinCodeKey"].Value != "0" && IsGameStart == false)
+            {
+                IsGameStart = true;
+                StartGame();
+            }
+        }
+        
 
         HandleLobbyPollForUpdate();
+    }
+    public async void StartGame()
+    {
+        try
+        {
+            foreach (Player player in joinedLobby.Players)
+            {
+                if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == hostLobby.Players[0].Id)
+                {
+                    Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
+                    string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+                    RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
+                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+
+                    Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                        {
+                            Data = new Dictionary<string, DataObject>
+                            {
+                                { "JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, joinCode) },
+                            }
+                        });
+                    hostLobby = lobby;
+                    joinedLobby = hostLobby;
+                    IsGameStart = true;
+                    NetworkManager.Singleton.StartHost();
+                }
+                else
+                {
+                    JoinRelay();
+                }
+            }
+        }
+        catch (LobbyServiceException e)
+        {
+
+            Debug.Log(e);
+        }
+    }
+
+    public async void JoinRelay()
+    {
+        Debug.Log(joinedLobby.Data["JoinCodeKey"].Value + 2);
+        Debug.Log("Joining Relay with " + joinedLobby.Data["JoinCodeKey"].Value);
+        JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinedLobby.Data["JoinCodeKey"].Value);
+        RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+        NetworkManager.Singleton.StartClient();
     }
     private async void UpdateLobbyCount()
     {
@@ -179,7 +244,8 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") },
+                        {"IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "NotReady") }
                     }
                 }
             };
@@ -229,8 +295,7 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             string lobbyName = lobbyNameInput.text;
             int maxPlayers = 2;
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
+
             CreateLobbyOptions options = new CreateLobbyOptions
             {
                 IsPrivate = false,
@@ -240,12 +305,13 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") },
+                        {"IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "NotReady") }
                     }
                 },
                 Data = new Dictionary<string, DataObject>
                 {
-                    {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, joinCode) }
+                    {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, "0") }
                 }
             };
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
@@ -293,7 +359,8 @@ public class LobbyScript : Singleton<LobbyScript>
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") },
+                        {"IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "NotReady") }
                     }
                 }
             };
@@ -464,6 +531,82 @@ public class LobbyScript : Singleton<LobbyScript>
             Debug.Log(e);
         }
     }
+
+    public void CheckIsTwoPlayerReady()
+    {
+        try
+        {
+            int numberOfPlayer = 0;
+            bool IsPlayer_1_Ready = false;
+            bool IsPlayer_2_Ready = false;
+            foreach (Player player in joinedLobby.Players)
+            {
+                if (numberOfPlayer == 0)
+                {
+                    if (player.Data["IsPlayerReady"].Value == "Ready")
+                    {
+                        IsPlayer_1_Ready = true;
+                    }
+                    numberOfPlayer++;
+                }
+                else if (numberOfPlayer == 1)
+                {
+                    if (player.Data["IsPlayerReady"].Value == "Ready")
+                    {
+                        IsPlayer_2_Ready = true;
+                    }
+                    numberOfPlayer++;
+                }
+            }
+
+            if (IsPlayer_1_Ready == true && IsPlayer_2_Ready == true)
+            {
+                StartGame();
+            }
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    public async void PlayerChangeStatus()
+    {
+        try
+        {
+            string currentPlayerStatus = "";
+            foreach (Player player in joinedLobby.Players)
+            {
+                if (player.Id == AuthenticationService.Instance.PlayerId)
+                {
+                    currentPlayerStatus = player.Data["IsPlayerReady"].Value;
+                }
+            }
+            if (currentPlayerStatus == "NotReady")
+            {
+                currentPlayerStatus = "Ready";
+            }
+            else if (currentPlayerStatus == "Ready")
+            {
+                currentPlayerStatus = "NotReady";
+            }
+            Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
+                AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                {
+                    { "IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, currentPlayerStatus) },
+                }
+                });
+            hostLobby = lobby;
+            joinedLobby = hostLobby;
+            PrintPlayers(joinedLobby);
+            updatePlayerListStatus(joinedLobby);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
     public async void PlayerChangeCharacter()
     {
         try
@@ -495,6 +638,27 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             Debug.Log(e);
         }
+    }
+    public void updatePlayerListStatus(Lobby lobby)
+    {
+        int numberOfPlayer = 0;
+        foreach (Player player in lobby.Players)
+        {
+            if (player.Data != null)
+            {
+                if (numberOfPlayer == 0)
+                {
+                    player_1_Status.text = player.Data["IsPlayerReady"].Value;
+                    numberOfPlayer++;
+                }
+                else
+                {
+                    player_2_Status.text = player.Data["IsPlayerReady"].Value;
+                    numberOfPlayer++;
+                }
+            }
+        }
+
     }
     public void UpdateCharacterIcon(Lobby lobby) 
     {
@@ -536,12 +700,15 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             player_1_NameText.text = "Empty Slot";
             player_2_NameText.text = "Empty Slot";
+            player_1_Status.text = "";
+            player_2_Status.text = "";
             playerCharacterImage_1.sprite = null;
             playerCharacterImage_2.sprite = null;
         }
         else if (joinedLobby.Players.Count == 1)
         {
             player_2_NameText.text = "Empty Slot";
+            player_2_Status.text = "";
             playerCharacterImage_2.sprite = null;
         }
     }

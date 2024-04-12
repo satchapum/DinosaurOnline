@@ -15,6 +15,7 @@ using Unity.Networking.Transport.Relay;
 using TMPro;
 public class QuickJoinLobbyScript : MonoBehaviour
 {
+    public Lobby hostLobby;
     public TMP_InputField playerNameInput;
     public GameObject startButton;
     public GameObject lobbyJoinPanel;
@@ -35,7 +36,6 @@ public class QuickJoinLobbyScript : MonoBehaviour
         LobbyScript.Instance.joinedLobby = LobbyScript.Instance.hostLobby;
         LobbyScript.Instance.PrintPlayers(joinedLobby);
         LobbyScript.Instance.UpdateRoomNameAndJoinCode(joinedLobby);
-
         if (joinedLobby == null)
         {
            startButton.SetActive(true);
@@ -82,6 +82,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
         }
 
     }
+    
     private async Task<Lobby> QuickJoinLobbyNoFinding()
     {
         try
@@ -94,7 +95,8 @@ public class QuickJoinLobbyScript : MonoBehaviour
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") },
+                        {"IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "NotReady") }
                     }
                 }
             };
@@ -107,8 +109,6 @@ public class QuickJoinLobbyScript : MonoBehaviour
                 value: "0")
             };
             var lobby = await LobbyService.Instance.QuickJoinLobbyAsync(options);
-
-            // ...
             return lobby;
         }
         catch (LobbyServiceException e)
@@ -165,17 +165,20 @@ public class QuickJoinLobbyScript : MonoBehaviour
                     Data = new Dictionary<string, PlayerDataObject>
                     {
                         {"PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameInput.text)},
-                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") }
+                        {"PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "Dino") },
+                        {"IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "NotReady") }
                     }
                 },
-                /*Data = new Dictionary<string, DataObject>
+                Data = new Dictionary<string, DataObject>
                 {
-                    {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, joinCode) }
-                }*/
+                    {"JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, "0") }
+                }
             };
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
-            Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers + "," + lobby.Id + "," + lobby.LobbyCode);
 
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
+            hostLobby = lobby;
+            Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers + "," + lobby.Id + "," + lobby.LobbyCode);
+            
             // Send a heartbeat every 15 seconds to keep the room alive
             StartCoroutine(HeartBeatLobbyCoroutine(lobby.Id, 15));
 

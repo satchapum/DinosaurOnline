@@ -38,7 +38,7 @@ public class PlayerControllerScript : NetworkBehaviour
         if (collision.collider == groundGroupCollider)
         {
             isGrounded = true;
-            animator.SetBool("Jump", false);
+            //animator.SetBool("Jump", false);
         }
     }
 
@@ -61,13 +61,13 @@ public class PlayerControllerScript : NetworkBehaviour
         if (!running)
         {
             running = true;
-            animator.SetBool("Running", true);
+            //animator.SetBool("Running", true);
         }
 
         else if (running)
         {
             running = false;
-            animator.SetBool("Running", false);
+            //animator.SetBool("Running", false);
         }
     }
 
