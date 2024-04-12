@@ -114,6 +114,68 @@ public class LobbyScript : Singleton<LobbyScript>
 
         HandleLobbyPollForUpdate();
     }
+    
+    public async void ChangePlayerStatusToNotReadyAndRemoveJoinCode()
+    {
+        try
+        {
+            foreach (Player player in joinedLobby.Players)
+            {
+
+                string currentPlayerStatus = "NotReady";
+                if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == hostLobby.Players[0].Id)
+                {
+                    Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
+                        AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+                    {
+                        Data = new Dictionary<string, PlayerDataObject>
+                        {
+                            { "IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, currentPlayerStatus) }
+                        }
+                    });
+                    lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+                    {
+                        Data = new Dictionary<string, DataObject>
+                    {
+                        { "JoinCodeKey", new DataObject(DataObject.VisibilityOptions.Public, "0") },
+                    }
+                    });
+                    hostLobby = lobby;
+                    joinedLobby = hostLobby;
+                    PrintPlayers(joinedLobby);
+                    updatePlayerListStatus(joinedLobby);
+                }
+                else if (player.Id == AuthenticationService.Instance.PlayerId)
+                {
+                    Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
+                        AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+                    {
+                        Data = new Dictionary<string, PlayerDataObject>
+                        {
+                            { "IsPlayerReady", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, currentPlayerStatus) }
+                        }
+                    });
+                    hostLobby = lobby;
+                    joinedLobby = hostLobby;
+                    PrintPlayers(joinedLobby);
+                    updatePlayerListStatus(joinedLobby);
+                }
+            }
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    public void ClosePanel()
+    {
+        roomJoinPanel.SetActive(false);
+    }
+    public void OpenPanel()
+    {
+        roomJoinPanel.SetActive(true);
+        ChangePlayerStatusToNotReadyAndRemoveJoinCode();
+    }
     void UpdatePlayerNameAndCharacterForOtherScript()
     {
         foreach (Player player in joinedLobby.Players)
@@ -150,6 +212,7 @@ public class LobbyScript : Singleton<LobbyScript>
                     Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
                     string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
                     RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
+                    Debug.Log(relayServerData);
                     NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
                     Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
@@ -163,6 +226,7 @@ public class LobbyScript : Singleton<LobbyScript>
                     joinedLobby = hostLobby;
                     IsGameStart = true;
                     Debug.Log(playerCharacter);
+                    ClosePanel();
                     loginManagerScript.Host();
                 }
                 else
@@ -180,12 +244,13 @@ public class LobbyScript : Singleton<LobbyScript>
 
     public async void JoinRelay()
     {
-        Debug.Log(joinedLobby.Data["JoinCodeKey"].Value + 2);
+        Debug.Log(joinedLobby.Data["JoinCodeKey"].Value );
         Debug.Log("Joining Relay with " + joinedLobby.Data["JoinCodeKey"].Value);
         JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinedLobby.Data["JoinCodeKey"].Value);
         RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
         Debug.Log(playerCharacter);
+        ClosePanel();
         loginManagerScript.Client();
     }
     private async void UpdateLobbyCount()

@@ -71,14 +71,10 @@ public class MainPlayerScript : NetworkBehaviour
         {
             loginManagerScript = GameObject.FindAnyObjectByType<LoginManagerScript>();
             lobbyScript = GameObject.FindObjectOfType<LobbyScript>();
-            if (loginManagerScript != null)
+            Debug.Log(lobbyScript.playerName);
+            if (lobbyScript != null)
             {
-                string name = loginManagerScript.userNameInputField.text;
-                if (IsOwnedByServer) { playerNameA.Value = name; }
-                else{ playerNameB.Value = name; }
-            }
-            else if (lobbyScript != null)
-            {
+                Debug.Log(lobbyScript.playerName);
                 string name = lobbyScript.playerName;
                 if (IsOwnedByServer) { playerNameA.Value = name; }
                 else { playerNameB.Value = name; }

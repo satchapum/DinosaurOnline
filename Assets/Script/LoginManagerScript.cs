@@ -40,6 +40,7 @@ public class LoginManagerScript : NetworkBehaviour
     [SerializeField] GameObject[] playerList;
     [SerializeField] LobbyScript lobbyScript;
     [SerializeField] GameObject timeText;
+    [SerializeField] TimeCount timeCount;
 
     public bool SetIsApproveConnection()
     {
@@ -85,6 +86,7 @@ public class LoginManagerScript : NetworkBehaviour
         if (NetworkManager.Singleton.IsClient)
         {
             NetworkManager.Singleton.Shutdown();
+            Cleanup();
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
 
         }
@@ -92,12 +94,23 @@ public class LoginManagerScript : NetworkBehaviour
         else if (NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.Shutdown();
+            Cleanup();
         }
-
+        timeCount.ResetTime();
+        lobbyScript.IsGameStart = false;
+        lobbyScript.OpenPanel();
+        timeText.SetActive(false);
         dinoUI.SetActive(false);
         godUI.SetActive(false);
         SetUIVisible(false);
 
+    }
+    void Cleanup()
+    {
+        if (NetworkManager.Singleton != null)
+        {
+            Destroy(NetworkManager.Singleton.gameObject);
+        }
     }
     private void HandleClientConnected(ulong clientId)
     {
@@ -133,6 +146,7 @@ public class LoginManagerScript : NetworkBehaviour
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
+        Debug.Log("ApprovalCheck");
         // The client identifier to be authenticated
         var clientId = request.ClientNetworkId;
 
@@ -181,11 +195,13 @@ public class LoginManagerScript : NetworkBehaviour
             if (NetworkManager.Singleton.IsHost)
             {
                 string characterId = setInputSkinData().ToString();
+                Debug.Log("characterId" + characterId);
                 characterPrefabIndex = int.Parse(characterId);
             }
             else
             {
                 string characterId = setInputSkinData().ToString();
+                Debug.Log("characterId" + characterId);
                 characterPrefabIndex = int.Parse(characterId);
             }
         }
@@ -269,7 +285,6 @@ public class LoginManagerScript : NetworkBehaviour
         string[] inputFields = { username, characterId };
         string clientData = HelperScript.CombineStrings(inputFields);
         NetworkManager.Singleton.NetworkConfig.ConnectionData = System.Text.Encoding.ASCII.GetBytes(clientData);
-        NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartClient();
 
         Debug.Log("Start client");
@@ -312,7 +327,7 @@ public class LoginManagerScript : NetworkBehaviour
         playerList = GameObject.FindGameObjectsWithTag("Player");
         if (IsHost)
         {
-            if (playerList.Length <= 0)
+            if (playerList.Length <= 1)
             {
                 GameManager.Instance.gameStart = false;
                 isTwoPlayerSpawning = false;

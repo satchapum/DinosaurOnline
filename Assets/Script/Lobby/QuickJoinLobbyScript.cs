@@ -43,45 +43,6 @@ public class QuickJoinLobbyScript : MonoBehaviour
            roomJoinPanel.SetActive(false);
         }
     }
-
-    private async Task<Lobby> QuickJoinLobby()
-    {
-        try
-        {
-            // Quick-join a random lobby 
-            Lobby lobby = await FindRandomLobby();
-
-            if (lobby == null) return null;
-            Debug.Log(lobby.Name + " , " + lobby.AvailableSlots);
-
-            // If we found one, grab the relay allocation details
-            if (lobby.Data["JoinCodeKey"].Value != null)
-            {
-                string joinCode = lobby.Data["JoinCodeKey"].Value;
-                Debug.Log("joinCode = " + joinCode);
-                if (joinCode == null) return null;
-
-                JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-
-                RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
-                NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
-                // Join the game room as a client
-
-                //NetworkManager.Singleton.StartClient();
-
-                return lobby;
-            }
-
-            return null;
-        }
-        catch (Exception e)
-        {
-            Debug.Log("No lobbies available via quick join");
-            return null;
-        }
-
-    }
     
     private async Task<Lobby> QuickJoinLobbyNoFinding()
     {
@@ -150,10 +111,6 @@ public class QuickJoinLobbyScript : MonoBehaviour
         try
         {
             const int maxPlayers = 2;
-
-            // Create a relay allocation and generate a join code to share with the lobby
-            Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-            string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 
             // Create a lobby, adding the relay join code to the lobby data
             CreateLobbyOptions createLobbyOptions = new CreateLobbyOptions
