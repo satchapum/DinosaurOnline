@@ -13,6 +13,7 @@ using Unity.Services.Core;
 using System.Linq;
 using TMPro;
 using System.Threading.Tasks;
+using UnityEngine.UI;
 
 public class LobbyScript : Singleton<LobbyScript>
 {
@@ -39,12 +40,19 @@ public class LobbyScript : Singleton<LobbyScript>
     [SerializeField] GameObject roomJoinPanel;
     [SerializeField] TMP_Dropdown characterSelect;
     [SerializeField] GameObject lobbyPrefab;
+    [SerializeField] Image playerCharacterImage_1;
+    [SerializeField] Image playerCharacterImage_2;
+
+    [Header("Image")]
+    [SerializeField] Sprite dinoImage;
+    [SerializeField] Sprite godImage;
 
     private void Start()
     {
         timeCount = 0;
         oldLobbyCount = 0;
         currentLobbyCount = 0;
+        //characterSelect.onValueChanged.AddListener(delegate { PlayerChangeCharacter();});
         //var callbacks = new LobbyEventCallbacks();
         //callbacks.LobbyChanged += OnLobbyChanged;
     }
@@ -55,11 +63,15 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             if (joinedLobby.Players.Count == 2)
             {
+                UpdateCharacterIcon(joinedLobby);
                 updatePlayerListName(joinedLobby);
+                changeNameAndImageInlobbyToEmpty();
             }
             else if (joinedLobby.Players.Count == 1)
             {
+                UpdateCharacterIcon(joinedLobby);
                 updatePlayerListName(joinedLobby);
+                changeNameAndImageInlobbyToEmpty();
             }
         }
 
@@ -433,7 +445,7 @@ public class LobbyScript : Singleton<LobbyScript>
         try
         {
             playerName = playerNameInput.text;
-            await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
+            Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
                 AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
             {
                 Data = new Dictionary<string, PlayerDataObject>
@@ -441,6 +453,8 @@ public class LobbyScript : Singleton<LobbyScript>
                     { "PlayerName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerNameChangeInput.text) },
                 }
             });
+            hostLobby = lobby;
+            joinedLobby = hostLobby;
             PrintPlayers(joinedLobby);
             UpdatePlayerName(joinedLobby);
             updatePlayerListName(joinedLobby);
@@ -448,6 +462,87 @@ public class LobbyScript : Singleton<LobbyScript>
         catch ( LobbyServiceException e)
         {
             Debug.Log(e);
+        }
+    }
+    public async void PlayerChangeCharacter()
+    {
+        try
+        {
+            string newCharacterSelect = "";
+            if (characterSelect.value == 0)
+            {
+                newCharacterSelect = "Dino";
+            }
+            else if (characterSelect.value == 1)
+            {
+                newCharacterSelect = "God";
+            }
+            Debug.Log(newCharacterSelect);
+            Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
+                AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
+                {
+                    Data = new Dictionary<string, PlayerDataObject>
+                {
+                    { "PlayerCharacterSelect", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, newCharacterSelect) },
+                }
+                });
+            hostLobby = lobby;
+            joinedLobby = hostLobby;
+            PrintPlayers(joinedLobby);
+            UpdateCharacterIcon(joinedLobby);
+        }
+        catch (LobbyServiceException e)
+        {
+            Debug.Log(e);
+        }
+    }
+    public void UpdateCharacterIcon(Lobby lobby) 
+    {
+        int numberOfPlayer = 0;
+        foreach (Player player in lobby.Players)
+        {
+            if (player.Data != null)
+            {
+                if (numberOfPlayer == 0)
+                {
+                    if (player.Data["PlayerCharacterSelect"].Value == "Dino")
+                    {
+                        playerCharacterImage_1.sprite = dinoImage;
+                    }
+                    else if (player.Data["PlayerCharacterSelect"].Value == "God")
+                    {
+                        playerCharacterImage_1.sprite = godImage;
+                    }
+                    numberOfPlayer++;
+                }
+                else
+                {
+                    if (player.Data["PlayerCharacterSelect"].Value == "Dino")
+                    {
+                        playerCharacterImage_2.sprite = dinoImage;
+                    }
+                    else if (player.Data["PlayerCharacterSelect"].Value == "God")
+                    {
+                        playerCharacterImage_2.sprite = godImage;
+                    }
+                    numberOfPlayer++;
+                }
+            }
+        }
+    }
+    public void changeNameAndImageInlobbyToEmpty()
+    {
+        if (joinedLobby.Players.Count == 0)
+        {
+            player_1_NameText.text = "Empty Slot";
+            player_2_NameText.text = "Empty Slot";
+            playerCharacterImage_1.sprite = null;
+            playerCharacterImage_2.sprite = null;
+        }
+        else if (joinedLobby.Players.Count == 1)
+        {
+            player_2_NameText.text = "Empty Slot";
+            playerCharacterImage_2.sprite = null;
         }
     }
 
@@ -480,14 +575,6 @@ public class LobbyScript : Singleton<LobbyScript>
                 }
             }
         }
-        if (lobby.Players.Count == 0)
-        {
-            player_1_NameText.text = "Empty Slot";
-            player_2_NameText.text = "Empty Slot";
-        }
-        else if (lobby.Players.Count == 1)
-        {
-            player_2_NameText.text = "Empty Slot";
-        }
+
     }
 }

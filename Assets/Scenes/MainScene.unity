@@ -1851,7 +1851,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 224130951485110974, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.000030517578
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224166536479716514, guid: 9ed2a051c32b4fe47a5e4fb95c20b03f, type: 3}
       propertyPath: m_AnchorMax.y
@@ -13310,7 +13310,19 @@ MonoBehaviour:
       m_Image: {fileID: 21300000, guid: a143c6c9e83522a4cabf93e05029582c, type: 3}
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1927568266}
+        m_TargetAssemblyTypeName: LobbyScript, Assembly-CSharp
+        m_MethodName: PlayerChangeCharacter
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_AlphaFadeSpeed: 0.15
 --- !u!114 &1615024896
 MonoBehaviour:
@@ -13448,7 +13460,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a143c6c9e83522a4cabf93e05029582c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 977a43ff609fb8a46b95b69870e07c57, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14545,6 +14557,10 @@ MonoBehaviour:
   roomJoinPanel: {fileID: 597491760}
   characterSelect: {fileID: 1615024895}
   lobbyPrefab: {fileID: 357626459}
+  playerCharacterImage_1: {fileID: 2048370150}
+  playerCharacterImage_2: {fileID: 1660162589}
+  dinoImage: {fileID: 21300000, guid: 977a43ff609fb8a46b95b69870e07c57, type: 3}
+  godImage: {fileID: 21300000, guid: a143c6c9e83522a4cabf93e05029582c, type: 3}
 --- !u!4 &1927568267
 Transform:
   m_ObjectHideFlags: 0
