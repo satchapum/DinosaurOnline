@@ -12,6 +12,7 @@ using Unity.Netcode.Transports.UTP;
 public class LoginManagerScript : NetworkBehaviour
 {
     public string ipAddress = "127.0.0.1";
+    public bool IsRealHost;
     public TMP_InputField joinCodeInputField;
     public string joinCode;
     UnityTransport transport;
@@ -63,16 +64,17 @@ public class LoginManagerScript : NetworkBehaviour
             healthUI.SetActive(true);
             loginPanel.SetActive(false);
             leaveButton.SetActive(true);
-            timeText.SetActive(true);
+            timeText.SetActive(false);
             //scorePanel.SetActive(true);
         }
-        /*else
+        else
         {
             healthUI.SetActive(false);
-            loginPanel.SetActive(true);
+            loginPanel.SetActive(false);
             leaveButton.SetActive(false);
+            timeText.SetActive(false);
             //scorePanel.SetActive(false);
-        }*/
+        }
     }
 
     private void HandleClientDisconnect(ulong clientId)
@@ -83,6 +85,12 @@ public class LoginManagerScript : NetworkBehaviour
     }
     public void Leave()
     {
+        timeCount.ResetTime();
+        lobbyScript.IsGameStart = false;
+        lobbyScript.OpenPanel();
+        dinoUI.SetActive(false);
+        godUI.SetActive(false);
+        SetUIVisible(false);
         if (NetworkManager.Singleton.IsClient)
         {
             NetworkManager.Singleton.Shutdown();
@@ -94,13 +102,7 @@ public class LoginManagerScript : NetworkBehaviour
         {
             NetworkManager.Singleton.Shutdown();
         }
-        timeCount.ResetTime();
-        lobbyScript.IsGameStart = false;
-        lobbyScript.OpenPanel();
-        timeText.SetActive(false);
-        dinoUI.SetActive(false);
-        godUI.SetActive(false);
-        SetUIVisible(false);
+
 
     }
     private void HandleClientConnected(ulong clientId)
@@ -125,12 +127,13 @@ public class LoginManagerScript : NetworkBehaviour
         NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnect;
     }
 
-    public async void Host()
+    public async void Host(bool host)
     {
         /*if (RelayManagerScript.Instance.IsRelayEnabled)
         {
             await RelayManagerScript.Instance.CreateRelay();
         }*/
+        IsRealHost = host;
         NetworkManager.Singleton.ConnectionApprovalCallback = ApprovalCheck;
         NetworkManager.Singleton.StartHost();
     }
@@ -149,7 +152,7 @@ public class LoginManagerScript : NetworkBehaviour
         int characterPrefabIndex = 0;
 
         //bool nameCheck = false;
-        if (byteLength > 0)
+        if (byteLength > 0 && IsRealHost == false)
         {
             string combinedString = System.Text.Encoding.ASCII.GetString(connectionData,0,byteLength);
             string[] extractedString = HelperScript.ExtractStrings(combinedString);
@@ -175,6 +178,7 @@ public class LoginManagerScript : NetworkBehaviour
                 else if (i == 1)
                 {
                     characterPrefabIndex = int.Parse(extractedString[i]);
+                    Debug.Log("characterId client" + characterPrefabIndex);
                     isApprove = true;
                 }
             }
@@ -186,13 +190,13 @@ public class LoginManagerScript : NetworkBehaviour
             if (NetworkManager.Singleton.IsHost)
             {
                 string characterId = setInputSkinData().ToString();
-                Debug.Log("characterId" + characterId);
+                Debug.Log("characterId host" + characterId);
                 characterPrefabIndex = int.Parse(characterId);
             }
             else
             {
                 string characterId = setInputSkinData().ToString();
-                Debug.Log("characterId" + characterId);
+                Debug.Log("characterId host" + characterId);
                 characterPrefabIndex = int.Parse(characterId);
             }
         }
@@ -263,13 +267,14 @@ public class LoginManagerScript : NetworkBehaviour
         response.Position = spawnPos;
         response.Rotation = spawnRot;
     }
-    public async void Client()
+    public async void Client(bool nothost)
     {
         /*joinCode = joinCodeInputField.GetComponent<TMP_InputField>().text;
         if (RelayManagerScript.Instance.IsRelayEnabled && !string.IsNullOrEmpty(joinCode))
         {
             await RelayManagerScript.Instance.JoinRelay(joinCode);
         }*/
+        IsRealHost = nothost;
         string username = lobbyScript.playerName;
         string characterId = setInputSkinData().ToString();
         Debug.Log(characterId);
@@ -330,8 +335,9 @@ public class LoginManagerScript : NetworkBehaviour
                 StopGroundMoveServerRPC();
 
             }
-            else if (playerList.Length == 2)
+            else if (playerList.Length >= 2)
             {
+                SetUIVisible(true);
                 StarGroundMoveServerRPC();
             }
         }

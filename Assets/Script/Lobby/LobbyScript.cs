@@ -72,6 +72,7 @@ public class LobbyScript : Singleton<LobbyScript>
         timeCount += Time.deltaTime;
         if (joinedLobby != null)
         {
+            UpdatePlayerNameAndCharacterForOtherScript();
             HostStartButton();
             if (joinedLobby.Players.Count == 2)
             {
@@ -110,11 +111,12 @@ public class LobbyScript : Singleton<LobbyScript>
         try
         {
             joinedLobby = hostLobby;
+            characterSelect.value = 0;
             foreach (Player player in joinedLobby.Players)
             {
 
                 string currentPlayerStatus = "NotReady";
-                if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == hostLobby.Players[0].Id)
+                if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == joinedLobby.HostId)
                 {
                     Lobby lobby = await LobbyService.Instance.UpdatePlayerAsync(joinedLobby.Id,
                         AuthenticationService.Instance.PlayerId, new UpdatePlayerOptions
@@ -182,7 +184,7 @@ public class LobbyScript : Singleton<LobbyScript>
     {
         foreach (Player player in joinedLobby.Players)
         {
-            if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == hostLobby.Players[0].Id)
+            if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == joinedLobby.HostId)
             {
                 StartButton.SetActive(true);
             }
@@ -198,7 +200,7 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             foreach (Player player in joinedLobby.Players)
             {
-                if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == hostLobby.Players[0].Id)
+                if (player.Id == AuthenticationService.Instance.PlayerId && player.Id == joinedLobby.HostId)
                 {
                     Allocation allocation = await RelayService.Instance.CreateAllocationAsync(2);
                     string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
@@ -227,7 +229,7 @@ public class LobbyScript : Singleton<LobbyScript>
                     IsGameStart = true;
                     Debug.Log(playerCharacter);
                     ClosePanel();
-                    loginManagerScript.Host();
+                    loginManagerScript.Host(true);
                 }
                 else
                 {
@@ -260,7 +262,7 @@ public class LobbyScript : Singleton<LobbyScript>
         }
         Debug.Log(playerCharacter);
         ClosePanel();
-        loginManagerScript.Client();
+        loginManagerScript.Client(false);
     }
     private async void UpdateLobbyCount()
     {
@@ -394,8 +396,10 @@ public class LobbyScript : Singleton<LobbyScript>
                             {
                                 UpdatePlayerNameAndCharacterForOtherScript();
                                 JoinRelay();
-
-                                
+                            }
+                            else if (player.Id == AuthenticationService.Instance.PlayerId)
+                            {
+                                UpdatePlayerNameAndCharacterForOtherScript();
                             }
                         }
                         joinedLobby = null;
