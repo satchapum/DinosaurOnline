@@ -86,7 +86,6 @@ public class LoginManagerScript : NetworkBehaviour
         if (NetworkManager.Singleton.IsClient)
         {
             NetworkManager.Singleton.Shutdown();
-            Cleanup();
             NetworkManager.Singleton.ConnectionApprovalCallback -= ApprovalCheck;
 
         }
@@ -94,7 +93,6 @@ public class LoginManagerScript : NetworkBehaviour
         else if (NetworkManager.Singleton.IsHost)
         {
             NetworkManager.Singleton.Shutdown();
-            Cleanup();
         }
         timeCount.ResetTime();
         lobbyScript.IsGameStart = false;
@@ -104,13 +102,6 @@ public class LoginManagerScript : NetworkBehaviour
         godUI.SetActive(false);
         SetUIVisible(false);
 
-    }
-    void Cleanup()
-    {
-        if (NetworkManager.Singleton != null)
-        {
-            Destroy(NetworkManager.Singleton.gameObject);
-        }
     }
     private void HandleClientConnected(ulong clientId)
     {

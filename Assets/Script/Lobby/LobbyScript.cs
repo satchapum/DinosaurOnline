@@ -15,7 +15,7 @@ using TMPro;
 using System.Threading.Tasks;
 using UnityEngine.UI;
 using Unity.Netcode;
-
+using System;
 public class LobbyScript : Singleton<LobbyScript>
 {
     public Lobby hostLobby;
@@ -30,6 +30,7 @@ public class LobbyScript : Singleton<LobbyScript>
     private float oldLobbyCount;
     public float timeCount;
 
+    public event EventHandler<EventArgs> OnGameStart;
     //Dontforgotthis*********************************************
     public bool IsGameStart;
 
@@ -102,7 +103,7 @@ public class LobbyScript : Singleton<LobbyScript>
             timeCount = 0;
             FindAllLobby();
         }
-        if (joinedLobby != null) 
+        /*if (joinedLobby != null) 
         {
             UpdatePlayerNameAndCharacterForOtherScript();
             if (joinedLobby.Data["JoinCodeKey"].Value != "0" && IsGameStart == false)
@@ -110,15 +111,17 @@ public class LobbyScript : Singleton<LobbyScript>
                 IsGameStart = true;
                 StartGame();
             }
-        }
+        }*/
 
         HandleLobbyPollForUpdate();
     }
+
     
     public async void ChangePlayerStatusToNotReadyAndRemoveJoinCode()
     {
         try
         {
+            joinedLobby = hostLobby;
             foreach (Player player in joinedLobby.Players)
             {
 
@@ -213,7 +216,16 @@ public class LobbyScript : Singleton<LobbyScript>
                     string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
                     RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
                     Debug.Log(relayServerData);
-                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+                    UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+                    if (transport != null)
+                    {
+                        transport.SetRelayServerData(relayServerData);
+                    }
+                    else
+                    {
+                        Debug.LogError("Failed to get UnityTransport component from NetworkManager.Singleton");
+                        // Handle the error gracefully (e.g., display a message to the user)
+                    }
 
                     Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
                         {
@@ -248,7 +260,16 @@ public class LobbyScript : Singleton<LobbyScript>
         Debug.Log("Joining Relay with " + joinedLobby.Data["JoinCodeKey"].Value);
         JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinedLobby.Data["JoinCodeKey"].Value);
         RelayServerData relayServerData = new RelayServerData(joinAllocation, "dtls");
-        NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
+        UnityTransport transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        if (transport != null)
+        {
+            transport.SetRelayServerData(relayServerData);
+        }
+        else
+        {
+            Debug.LogError("Failed to get UnityTransport component from NetworkManager.Singleton");
+            // Handle the error gracefully (e.g., display a message to the user)
+        }
         Debug.Log(playerCharacter);
         ClosePanel();
         loginManagerScript.Client();
@@ -376,6 +397,23 @@ public class LobbyScript : Singleton<LobbyScript>
                     lobbyUpdateTimer = lobbyUpdateTimerMax;
                     Lobby lobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
                     joinedLobby = lobby;
+
+                    if (joinedLobby.Data["JoinCodeKey"].Value != "0")
+                    {
+                        foreach (Player player in joinedLobby.Players)
+                        {
+                            if (player.Id == AuthenticationService.Instance.PlayerId && player.Id != joinedLobby.HostId)
+                            {
+                                UpdatePlayerNameAndCharacterForOtherScript();
+                                JoinRelay();
+
+                                
+                            }
+                        }
+                        joinedLobby = null;
+
+                        OnGameStart?.Invoke(this, EventArgs.Empty);
+                    }
                 }
             }
         }
