@@ -65,9 +65,6 @@ public class LobbyScript : Singleton<LobbyScript>
         timeCount = 0;
         oldLobbyCount = 0;
         currentLobbyCount = 0;
-        //characterSelect.onValueChanged.AddListener(delegate { PlayerChangeCharacter();});
-        //var callbacks = new LobbyEventCallbacks();
-        //callbacks.LobbyChanged += OnLobbyChanged;
     }
     private void Update()
     {
@@ -103,15 +100,6 @@ public class LobbyScript : Singleton<LobbyScript>
             timeCount = 0;
             FindAllLobby();
         }
-        /*if (joinedLobby != null) 
-        {
-            UpdatePlayerNameAndCharacterForOtherScript();
-            if (joinedLobby.Data["JoinCodeKey"].Value != "0" && IsGameStart == false)
-            {
-                IsGameStart = true;
-                StartGame();
-            }
-        }*/
 
         HandleLobbyPollForUpdate();
     }
@@ -521,15 +509,6 @@ public class LobbyScript : Singleton<LobbyScript>
         {
             LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
             yield return delay;
-        }
-    }
-    private void OnLobbyChanged(ILobbyChanges changes)
-    {
-        changes.ApplyToLobby(joinedLobby);
-        if (changes.LobbyDeleted)
-        {
-            Debug.Log("Somethingchange");
-            LeaveRoom();
         }
     }
     public async void KickPlayer()

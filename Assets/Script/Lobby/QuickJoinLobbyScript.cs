@@ -25,11 +25,7 @@ public class QuickJoinLobbyScript : MonoBehaviour
 
     public async void CreateOrJoinLobby()
     {
-        /*startButton.SetActive(false);
-        lobbyJoinPanel.SetActive(false);
-        roomJoinPanel.SetActive(true);*/
 
-        //joinedLobby = await QuickJoinLobby();
         joinedLobby = await QuickJoinLobbyNoFinding() ?? await CreateLobby();
 
         LobbyScript.Instance.hostLobby = joinedLobby;
@@ -135,17 +131,9 @@ public class QuickJoinLobbyScript : MonoBehaviour
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, createLobbyOptions);
             hostLobby = lobby;
             Debug.Log("Create Lobby : " + lobby.Name + "," + lobby.MaxPlayers + "," + lobby.Id + "," + lobby.LobbyCode);
-            
-            // Send a heartbeat every 15 seconds to keep the room alive
+
             StartCoroutine(HeartBeatLobbyCoroutine(lobby.Id, 15));
 
-            // Set the game room to use the relay allocation
-            //RelayServerData relayServerData = new RelayServerData(allocation, "dtls");
-            //NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
-
-            // Start the room immediately (or can wait for the lobby to fill up)
-
-            //NetworkManager.Singleton.StartHost();
             Debug.Log("Join code = " + lobby.LobbyCode);
             return lobby;
         }
@@ -171,12 +159,6 @@ public class QuickJoinLobbyScript : MonoBehaviour
         try
         {
             StopAllCoroutines();
-            // todo: Add a check to see if you're host
-            //if (joinedLobby != null)
-            //{
-            //    if (joinedLobby.HostId == _playerId) Lobbies.Instance.DeleteLobbyAsync(joinedLobby.Id);
-            //    else Lobbies.Instance.RemovePlayerAsync(joinedLobby.Id, _playerId);
-            //}
         }
         catch (Exception e)
         {
