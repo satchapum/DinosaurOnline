@@ -40,7 +40,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6780cb65380ad3d40a93673df9870002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
   namePrefab: {fileID: 1053716087881325711, guid: 0672c25c042c9e746b10186f09d35c4f, type: 3}
   isRedMat:
     m_InternalValue: 0
@@ -259,7 +260,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   rotationSpeed: 10
-  jumpForce: 5
+  jumpForce: 0
+  speedWhenSlow: 1
   isGrounded: 0
   groundGroupCollider: {fileID: 0}
   normalCollider: {fileID: 6414671145788479100}
