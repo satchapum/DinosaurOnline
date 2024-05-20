@@ -17,11 +17,14 @@ public class HPPlayerScript : NetworkBehaviour
     private Image health_1;
     private Image health_2;
     private Image health_3;
+    private PlayerControllerScript playerControllerScript;
 
     [SerializeField] LoginManagerScript loginManagerScript;
+    
 
     void Start()
     {
+        playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
         hpDino.Value = GameManager.Instance.dinoHealth;
 
         loginManagerScript = Resources.FindObjectsOfTypeAll<LoginManagerScript>().FirstOrDefault(g => g.CompareTag("LoginManager"));
@@ -81,7 +84,26 @@ public class HPPlayerScript : NetworkBehaviour
             //gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
         }
     }
-
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Pond")
+        {
+            if (IsOwnedByServer)
+            {
+                playerControllerScript.playerGetDelay();
+            }
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Pond")
+        {
+            if (IsOwnedByServer)
+            {
+                playerControllerScript.playerDontGetDelay();
+            }
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsLocalPlayer) return;
@@ -100,6 +122,7 @@ public class HPPlayerScript : NetworkBehaviour
                 hpDino.Value--;
             }
         }
+        
         UpdateScore();
 
     }

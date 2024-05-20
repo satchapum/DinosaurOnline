@@ -8,8 +8,10 @@ using Unity.Netcode;
 public class PlayerControllerScript : NetworkBehaviour
 {
     public float speed = 5.0f;
+    float temp_Speed;
     public float rotationSpeed = 10.0f;
     public float jumpForce = 5f;
+    public float speedWhenSlow = 1.0f;
 
     public bool isGrounded;
     public Collider groundGroupCollider;
@@ -24,6 +26,7 @@ public class PlayerControllerScript : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        temp_Speed = speed;
         GameObject groundGroup = GameObject.Find("GroundGroup");
         groundGroupCollider = groundGroup.GetComponent<Collider>();
         animator = GetComponent<Animator>();
@@ -49,6 +52,17 @@ public class PlayerControllerScript : NetworkBehaviour
             isGrounded = false;
         }
     }
+    
+    public void playerGetDelay()
+    {
+        speed = speedWhenSlow;
+    }
+
+    public void playerDontGetDelay()
+    {
+        speed = temp_Speed;
+    }
+
 
     void moveForward()
     {

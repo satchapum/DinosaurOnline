@@ -27,13 +27,14 @@ public class StoneScript : NetworkBehaviour
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
             obstacleSpawn.DestroyStoneServerRpc(networkObjId);
         }
-
         if (collision.gameObject.tag == "DeleteZone")
         {
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
             obstacleSpawn.DestroyStoneServerRpc(networkObjId);
         }
+
     }
+
     private void SpawnEffect()
     {
         GameObject effect = Instantiate(effectFirePrefab, transform.position, Quaternion.identity);

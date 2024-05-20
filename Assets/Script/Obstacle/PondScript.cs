@@ -5,8 +5,11 @@ using Unity.Netcode;
 
 public class PondScript : NetworkBehaviour
 {
+    
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
+
+    [SerializeField] float slowTime = 2;
 
     private void Start()
     {
@@ -19,20 +22,14 @@ public class PondScript : NetworkBehaviour
         transform.position += transform.forward * GameManager.Instance.gameSpeed * Time.deltaTime;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
-        if (!IsOwner) return;
-        if (collision.gameObject.tag == "Player")
-        {
-            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyPondServerRpc(networkObjId);
-        }
+
         if (collision.gameObject.tag == "DeleteZone")
         {
             ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
             obstacleSpawn.DestroyPondServerRpc(networkObjId);
         }
-
     }
 
     private void SpawnEffect()

@@ -28,6 +28,7 @@ TagManager:
   - Cactus
   - LoginManager
   - LobbyListName
+  - Pond
   layers:
   - Default
   - TransparentFX

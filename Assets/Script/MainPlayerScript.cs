@@ -8,7 +8,7 @@ using Unity.Collections;
 
 public class MainPlayerScript : NetworkBehaviour
 {
-    Rigidbody rb;
+    public Rigidbody rb;
     public TMP_Text namePrefab;
     private TMP_Text nameLabel;
 

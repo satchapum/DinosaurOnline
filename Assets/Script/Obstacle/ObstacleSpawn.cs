@@ -102,7 +102,7 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnPondServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
+        Vector3 spawnPos = new Vector3(transform.position.x - 4, 0, transform.position.z);
         Quaternion spawnRot = transform.rotation;
         GameObject pond = Instantiate(pondPrefab, spawnPos, spawnRot);
         pond.GetComponent<NetworkObject>().Spawn();
