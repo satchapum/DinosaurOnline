@@ -73,7 +73,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 09eed4d2324b52340a2c82e9af4912fb, type: 2}
+  - {fileID: 2100000, guid: 39a98b7e5dfcc014ab4b7ce6fc7759d6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -332,7 +332,7 @@ MonoBehaviour:
   birdPrefab: {fileID: 7558019836842281974, guid: 7815324568808294c97442e037c24ee9, type: 3}
   stonePrefab: {fileID: 7558019836842281974, guid: caa0be26839a01c458fe8ddae65c77d8, type: 3}
   cactusPrefab: {fileID: 4130540285435591111, guid: 967fa467ce64e1e48ac1af1352e87011, type: 3}
-  pondPrefab: {fileID: 7558019836842281974, guid: 4fe93fe720b9fb04bb06189f2a5237f4, type: 3}
+  pondPrefab: {fileID: 1652438852783961643, guid: 7a587620eec0c554fb0cea3e280c0223, type: 3}
   skill_1: {fileID: 0}
   skill_2: {fileID: 0}
   skill_3: {fileID: 0}

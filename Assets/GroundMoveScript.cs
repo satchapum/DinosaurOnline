@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class GroundMoveScript : NetworkBehaviour
+public class GroundMoveScript : MonoBehaviour
 {
     [SerializeField] GameObject ground_1;
     [SerializeField] GameObject ground_2;
