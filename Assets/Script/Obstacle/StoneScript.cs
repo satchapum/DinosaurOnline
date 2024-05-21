@@ -7,13 +7,10 @@ public class StoneScript : NetworkBehaviour
 {
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
-    public PlayerControllerScript playerControllerScript;
-    public float characterNumber;
+
 
     private void Start()
     {
-        characterNumber = GameObject.FindAnyObjectByType<HPPlayerScript>().characterNumber;
-        playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
         obstacleSpawn = GameObject.FindAnyObjectByType<ObstacleSpawn>();
         //SpawnEffect();
     }

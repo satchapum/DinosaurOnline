@@ -21,6 +21,9 @@ public class HPPlayerScript : NetworkBehaviour
     public float characterNumber;
 
     [SerializeField] LoginManagerScript loginManagerScript;
+
+    public bool IsImmune = false;
+    public float immuneTime = 1;
     
 
     void Start()
@@ -195,6 +198,8 @@ public class HPPlayerScript : NetworkBehaviour
 
             }
         }
+        
+        
 
         UpdateScoreServerRpc();
 

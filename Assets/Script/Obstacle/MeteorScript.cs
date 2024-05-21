@@ -8,16 +8,12 @@ public class MeteorScript : NetworkBehaviour
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
     public float destroyDelay = 3f;
-    public PlayerControllerScript playerControllerScript;
-    public float characterNumber;
+
 
     private void Start()
     {
-        characterNumber = GameObject.FindAnyObjectByType<HPPlayerScript>().characterNumber;
-        playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
         obstacleSpawn = GameObject.FindAnyObjectByType<ObstacleSpawn>();
         //SpawnEffect();
-        StartCoroutine(DestroyBulletDelay());
     }
 
     private void Update()
@@ -34,7 +30,7 @@ public class MeteorScript : NetworkBehaviour
                 DestroyObstacle();
             }
 
-            if (collision.gameObject.tag == "DeleteZone")
+            if (collision.gameObject.tag == "Ground")
             {
                 DestroyObstacle();
             }
@@ -46,7 +42,7 @@ public class MeteorScript : NetworkBehaviour
                 DestroyObstacleServerRpc();
             }
 
-            if (collision.gameObject.tag == "DeleteZone")
+            if (collision.gameObject.tag == "Ground")
             {
                 DestroyObstacleServerRpc();
             }
@@ -70,10 +66,5 @@ public class MeteorScript : NetworkBehaviour
     {
         GameObject effect = Instantiate(effectFirePrefab, transform.position, Quaternion.identity);
         effect.GetComponent<NetworkObject>().Spawn();
-    }
-    IEnumerator DestroyBulletDelay()
-    {
-        yield return new WaitForSeconds(destroyDelay);
-        DestroyObstacleServerRpc();
     }
 }

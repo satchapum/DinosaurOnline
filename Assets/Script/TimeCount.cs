@@ -21,27 +21,31 @@ public class TimeCount : NetworkBehaviour
 
     private void Update()
     {
+        if (currentTime <= 0)
+        {
+            GameManager.Instance.gameStart = false;
+            loginManager.Leave();
+        }
+
+        if (GameManager.Instance.gameStart == true)
+        {
+            timeText.text = "Time : " + (int)currentTime;
+            currentTime -= Time.deltaTime;
+        }
+
+        if (currentTime <= timeToChangeSpeed)
+        {
+            GameManager.Instance.gameSpeed += speedToChange;
+            timeToChangeSpeed = timeToChangeSpeed - 15;
+        }
+
         if (IsHost)
         {
-            if (currentTime <= 0)
-            {
-                GameManager.Instance.gameStart = false;
-                loginManager.Leave();
-            }
-
             if (GameManager.Instance.gameStart == true)
             {
-                timeText.text = "Time : " + (int)currentTime;
-                currentTime -= Time.deltaTime;
-            }
-
-            if (currentTime <= timeToChangeSpeed)
-            {
-                GameManager.Instance.gameSpeed += speedToChange;
-                timeToChangeSpeed = timeToChangeSpeed - 15;
+                setGameStartClientRpc();
             }
         }
-        
     }
 
     public void ResetTime()
@@ -50,5 +54,10 @@ public class TimeCount : NetworkBehaviour
         timeToChangeSpeed = 90;
         timeText.text = "Time : " + (int)currentTime;
 
+    }
+    [ClientRpc(RequireOwnership = false)]
+    public void setGameStartClientRpc()
+    {
+        GameManager.Instance.gameStart = true;
     }
 }

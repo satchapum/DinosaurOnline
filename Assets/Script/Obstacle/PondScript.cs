@@ -8,14 +8,12 @@ public class PondScript : NetworkBehaviour
     
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
-    public PlayerControllerScript playerControllerScript;
-    public float characterNumber;
+
     [SerializeField] float slowTime = 2;
 
     private void Start()
     {
-        characterNumber = GameObject.FindAnyObjectByType<HPPlayerScript>().characterNumber;
-        playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
+
         obstacleSpawn = GameObject.FindAnyObjectByType<ObstacleSpawn>();
         //SpawnEffect();
     }

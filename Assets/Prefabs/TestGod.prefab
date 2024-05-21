@@ -40,7 +40,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -333,6 +333,11 @@ MonoBehaviour:
   stonePrefab: {fileID: 7558019836842281974, guid: caa0be26839a01c458fe8ddae65c77d8, type: 3}
   cactusPrefab: {fileID: 4130540285435591111, guid: 967fa467ce64e1e48ac1af1352e87011, type: 3}
   pondPrefab: {fileID: 1652438852783961643, guid: 7a587620eec0c554fb0cea3e280c0223, type: 3}
+  spawnedBird: []
+  spawnedStone: []
+  spawnedCactus: []
+  spawnedPond: []
+  spawnedMeteor: []
   skill_1: {fileID: 0}
   skill_2: {fileID: 0}
   skill_3: {fileID: 0}
