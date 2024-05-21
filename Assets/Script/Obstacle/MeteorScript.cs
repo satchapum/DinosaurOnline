@@ -7,8 +7,6 @@ public class MeteorScript : NetworkBehaviour
 {
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
-    public float destroyDelay = 3f;
-
 
     private void Start()
     {
@@ -40,6 +38,7 @@ public class MeteorScript : NetworkBehaviour
             if (collision.gameObject.tag == "Player")
             {
                 DestroyObstacleServerRpc();
+
             }
 
             if (collision.gameObject.tag == "Ground")
@@ -62,6 +61,8 @@ public class MeteorScript : NetworkBehaviour
         Debug.Log("destroy = : " + networkObjId);
         obstacleSpawn.DestroyMeteorServerRpc(networkObjId);
     }
+
+
     private void SpawnEffect()
     {
         GameObject effect = Instantiate(effectFirePrefab, transform.position, Quaternion.identity);

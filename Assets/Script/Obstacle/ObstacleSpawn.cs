@@ -78,6 +78,7 @@ public class ObstacleSpawn : NetworkBehaviour
             StartCoroutine(SkillMeteoCooldown());
             int randomNum = (int)Random.Range(1, 4);
             Vector3 spawnPos;
+
             if (randomNum == 1)
             {
                 spawnPos = new Vector3(meteorTrans1.transform.position.x, meteorTrans1.transform.position.y, meteorTrans1.transform.position.z);
@@ -101,16 +102,6 @@ public class ObstacleSpawn : NetworkBehaviour
 
     }
 
-    IEnumerator SkillMeteoCooldown()
-    {
-        for (int i = 0; i < allSkillCooldown; i++)
-        {
-            yield return new WaitForSeconds(allSkillCooldown);
-            skillMeteorCooldown -= 1;
-        }
-        yield return null;
-    }
-
     [ServerRpc]
     public void SpawnStoneServerRpc()
     {
@@ -126,6 +117,16 @@ public class ObstacleSpawn : NetworkBehaviour
             stone.GetComponent<StoneScript>().obstacleSpawn = this;
         }
     }
+    IEnumerator SkillMeteoCooldown()
+    {
+        for (int i = 0; i < allSkillCooldown; i++)
+        {
+            yield return new WaitForSeconds(allSkillCooldown);
+            skillMeteorCooldown -= 1;
+        }
+        yield return null;
+    }
+
 
     IEnumerator SkillStoneCooldown()
     {
@@ -267,10 +268,10 @@ public class ObstacleSpawn : NetworkBehaviour
 
     private GameObject findSpawnerMeteor(ulong netWorkObjId)
     {
-        foreach (GameObject arrow in spawnedMeteor)
+        foreach (GameObject meteo in spawnedMeteor)
         {
-            ulong arrowId = arrow.GetComponent<NetworkObject>().NetworkObjectId;
-            if (arrowId == netWorkObjId) { return arrow; }
+            ulong meteoId = meteo.GetComponent<NetworkObject>().NetworkObjectId;
+            if (meteoId == netWorkObjId) { return meteo; }
         }
         return null;
     }
