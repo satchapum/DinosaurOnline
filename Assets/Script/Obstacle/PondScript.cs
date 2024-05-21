@@ -24,14 +24,19 @@ public class PondScript : NetworkBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-
+        if (!IsOwner) return;
         if (collision.gameObject.tag == "DeleteZone")
         {
-            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyPondServerRpc(networkObjId);
+            DestroyObstacleServerRpc();
         }
     }
-
+    [ServerRpc]
+    private void DestroyObstacleServerRpc()
+    {
+        if (!IsOwner) return;
+        ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+        obstacleSpawn.DestroyCactusServerRpc(networkObjId);
+    }
     private void SpawnEffect()
     {
         GameObject effect = Instantiate(effectFirePrefab, transform.position, Quaternion.identity);

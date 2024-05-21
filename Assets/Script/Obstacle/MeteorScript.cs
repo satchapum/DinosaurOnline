@@ -26,28 +26,30 @@ public class MeteorScript : NetworkBehaviour
         if (!IsOwner) return;
         if (collision.gameObject.tag == "Player")
         {
-            StopCoroutine(DestroyBulletDelay());
-            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyMeteorServerRpc(networkObjId);
+            DestroyObstacleServerRpc();
 
         }
 
         if (collision.gameObject.tag == "Ground")
         {
-            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyMeteorServerRpc(networkObjId);
+            DestroyObstacleServerRpc();
         }
+    }
+    [ServerRpc]
+    private void DestroyObstacleServerRpc()
+    {
+        if (!IsOwner) return;
+        ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+        obstacleSpawn.DestroyCactusServerRpc(networkObjId);
     }
     private void SpawnEffect()
     {
         GameObject effect = Instantiate(effectFirePrefab, transform.position, Quaternion.identity);
         effect.GetComponent<NetworkObject>().Spawn();
     }
-
     IEnumerator DestroyBulletDelay()
     {
-        ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
         yield return new WaitForSeconds(destroyDelay);
-        obstacleSpawn.DestroyMeteorServerRpc(networkObjId);
+        DestroyObstacleServerRpc();
     }
 }

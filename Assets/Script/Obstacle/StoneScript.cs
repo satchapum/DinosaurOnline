@@ -24,15 +24,21 @@ public class StoneScript : NetworkBehaviour
         if (!IsOwner) return;
         if (collision.gameObject.tag == "Player")
         {
-            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyStoneServerRpc(networkObjId);
+            DestroyObstacleServerRpc();
         }
         if (collision.gameObject.tag == "DeleteZone")
         {
-            ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-            obstacleSpawn.DestroyStoneServerRpc(networkObjId);
+            DestroyObstacleServerRpc();
         }
 
+    }
+
+    [ServerRpc]
+    private void DestroyObstacleServerRpc()
+    {
+        if (!IsOwner) return;
+        ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+        obstacleSpawn.DestroyCactusServerRpc(networkObjId);
     }
 
     private void SpawnEffect()

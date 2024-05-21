@@ -11,7 +11,7 @@ public class OpenUI : NetworkBehaviour
     [SerializeField] GameObject healthUI;
     [SerializeField] GameObject timeUI;
 
-    [SerializeField] int characterNumber;
+    [SerializeField] public int characterNumber;
 
     private void Update()
     {

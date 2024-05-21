@@ -338,7 +338,7 @@ MonoBehaviour:
   skill_3: {fileID: 0}
   skill_4: {fileID: 0}
   skill_5: {fileID: 0}
-  allSkillCooldown: 5
+  allSkillCooldown: 2
   skillBirdCooldown: 0
   skillCactusCooldown: 0
   skillPondCooldown: 0
