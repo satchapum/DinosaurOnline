@@ -17,7 +17,7 @@ public class HPPlayerScript : NetworkBehaviour
     private Image health_1;
     private Image health_2;
     private Image health_3;
-    private PlayerControllerScript playerControllerScript;
+    public PlayerControllerScript playerControllerScript;
     public float characterNumber;
 
     [SerializeField] LoginManagerScript loginManagerScript;
@@ -25,10 +25,9 @@ public class HPPlayerScript : NetworkBehaviour
 
     void Start()
     {
-        if (!IsOwner) return;
         characterNumber = gameObject.GetComponent<OpenUI>().characterNumber;
         playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
-        hpDino.Value = GameManager.Instance.dinoHealth;
+        
 
         loginManagerScript = Resources.FindObjectsOfTypeAll<LoginManagerScript>().FirstOrDefault(g => g.CompareTag("LoginManager"));
 
@@ -38,16 +37,18 @@ public class HPPlayerScript : NetworkBehaviour
         health_1 = Resources.FindObjectsOfTypeAll<Image>().FirstOrDefault(g => g.CompareTag("Health_1"));
         health_2 = Resources.FindObjectsOfTypeAll<Image>().FirstOrDefault(g => g.CompareTag("Health_2"));
         health_3 = Resources.FindObjectsOfTypeAll<Image>().FirstOrDefault(g => g.CompareTag("Health_3"));
+
+        if (!IsOwner) return;
+        hpDino.Value = GameManager.Instance.dinoHealth;
     }
 
     private void UpdatePlayerNameAndScore()
     {
-        //Debug.Log("Update");
+        
         if (IsOwner)
         {
             if (characterNumber == 0)
             {
-                Debug.Log("changeColorhost");
                 if (hpDino.Value == 3)
                 {
                     ChangeColor(Color.red, Color.red, Color.red);
@@ -67,7 +68,6 @@ public class HPPlayerScript : NetworkBehaviour
             }
             else if (characterNumber == 1)
             {
-                Debug.Log("changeColorclient");
                 if (hpDino.Value == 3)
                 {
                     ChangeColorClientRpc(Color.red, Color.red, Color.red);
@@ -126,24 +126,45 @@ public class HPPlayerScript : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log(other.gameObject.tag);
-        if (other.gameObject.tag == "Pond")
+
+        if (characterNumber == 0)
         {
-            if (IsOwnedByServer)
+            if (other.gameObject.tag == "Pond")
             {
-                playerControllerScript.playerGetDelayServerRpc();
+                playerControllerScript.playerGetDelay();
+
             }
         }
+        if (characterNumber == 1)
+        {
+            if (other.gameObject.tag == "Pond")
+            {
+                playerControllerScript.playerGetDelayClientRpc();
+
+            }
+        }
+
     }
     private void OnTriggerExit(Collider other)
     {
         Debug.Log(other.gameObject.tag);
-        if (other.gameObject.tag == "Pond")
+        if (characterNumber == 0)
         {
-            if (IsOwnedByServer)
+            if (other.gameObject.tag == "Pond")
             {
-                playerControllerScript.playerDontGetDelayServerRpc();
+                playerControllerScript.playerDontGetDelay();
+
             }
         }
+        if (characterNumber == 1)
+        {
+            if (other.gameObject.tag == "Pond")
+            {
+                playerControllerScript.playerDontGetDelayClientRpc();
+
+            }
+        }
+
     }
     private void OnCollisionEnter(Collision collision)
     {

@@ -52,13 +52,21 @@ public class PlayerControllerScript : NetworkBehaviour
             isGrounded = false;
         }
     }
-    [ServerRpc]
-    public void playerGetDelayServerRpc()
+    public void playerGetDelay()
     {
         speed = speedWhenSlow;
     }
-    [ServerRpc]
-    public void playerDontGetDelayServerRpc()
+    public void playerDontGetDelay()
+    {
+        speed = temp_Speed;
+    }
+    [ClientRpc]
+    public void playerGetDelayClientRpc()
+    {
+        speed = speedWhenSlow;
+    }
+    [ClientRpc]
+    public void playerDontGetDelayClientRpc()
     {
         speed = temp_Speed;
     }

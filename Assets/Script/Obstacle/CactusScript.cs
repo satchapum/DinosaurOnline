@@ -7,9 +7,11 @@ public class CactusScript : NetworkBehaviour
 {
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
-
+    public PlayerControllerScript playerControllerScript;
+    public float characterNumber;
     private void Start()
     {
+        playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
         if (!IsOwner) return;
         SpawnEffect();
     }
@@ -21,26 +23,55 @@ public class CactusScript : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Player")
+
+
+        if (characterNumber == 0)
         {
-            DestroyObstacleServerRpc();
+            if (collision.gameObject.tag == "Player")
+            {
+                DestroyObstacle();
+            }
+
+            if (collision.gameObject.tag == "DeleteZone")
+            {
+                DestroyObstacle();
+            }
+
+            if (collision.gameObject.tag == "Cactus")
+            {
+                DestroyObstacle();
+            }
+        }
+        if (characterNumber == 1)
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                DestroyObstacleServerRpc();
+            }
+
+            if (collision.gameObject.tag == "DeleteZone")
+            {
+                DestroyObstacleServerRpc();
+            }
+
+            if (collision.gameObject.tag == "Cactus")
+            {
+                DestroyObstacleServerRpc();
+            }
         }
 
-        if (collision.gameObject.tag == "DeleteZone")
-        {
-            DestroyObstacleServerRpc();
-        }
-
-        if (collision.gameObject.tag == "Cactus")
-        {
-            DestroyObstacleServerRpc();
-        }
+    }
+    private void DestroyObstacle()
+    {
+        ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+        Debug.Log("destroy = : " + networkObjId);
+        obstacleSpawn.DestroyCactusServerRpc(networkObjId);
     }
     [ServerRpc]
     private void DestroyObstacleServerRpc()
     {
-        if (!IsOwner) return;
         ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+        Debug.Log("destroy = : " + networkObjId);
         obstacleSpawn.DestroyCactusServerRpc(networkObjId);
     }
 

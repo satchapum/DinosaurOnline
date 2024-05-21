@@ -8,9 +8,12 @@ public class MeteorScript : NetworkBehaviour
     public ObstacleSpawn obstacleSpawn;
     public GameObject effectFirePrefab;
     public float destroyDelay = 3f;
+    public PlayerControllerScript playerControllerScript;
+    public float characterNumber;
 
     private void Start()
     {
+        playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
         if (!IsOwner) return;
         SpawnEffect();
         StartCoroutine(DestroyBulletDelay());
