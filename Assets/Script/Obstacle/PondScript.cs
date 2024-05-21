@@ -13,7 +13,6 @@ public class PondScript : NetworkBehaviour
 
     private void Start()
     {
-
         obstacleSpawn = GameObject.FindAnyObjectByType<ObstacleSpawn>();
         //SpawnEffect();
     }

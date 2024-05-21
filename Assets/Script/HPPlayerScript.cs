@@ -168,8 +168,8 @@ public class HPPlayerScript : NetworkBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        //if (!IsLocalPlayer) return;
-        if (characterNumber == 0)
+        if(!IsLocalPlayer) return;
+        if (IsHost)
         {
             if (collision.gameObject.tag == "Cactus")
             {
@@ -182,7 +182,7 @@ public class HPPlayerScript : NetworkBehaviour
 
             }
         }
-        if (characterNumber == 1)
+        else if (IsClient)
         {
             if (collision.gameObject.tag == "Cactus")
             {

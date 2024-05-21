@@ -21,28 +21,33 @@ public class MeteorScript : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
         if (IsHost)
         {
             if (collision.gameObject.tag == "Player")
             {
+                Debug.Log(1);
                 DestroyObstacle();
             }
 
             if (collision.gameObject.tag == "Ground")
             {
+                Debug.Log(2);
                 DestroyObstacle();
             }
         }
-        if (IsClient)
+        else if (IsClient)
         {
             if (collision.gameObject.tag == "Player")
             {
+                Debug.Log(3);
                 DestroyObstacleServerRpc();
 
             }
 
             if (collision.gameObject.tag == "Ground")
             {
+                Debug.Log(4);
                 DestroyObstacleServerRpc();
             }
         }

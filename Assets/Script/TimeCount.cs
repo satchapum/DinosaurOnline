@@ -17,6 +17,7 @@ public class TimeCount : NetworkBehaviour
     private void Start()
     {
         currentTime = timeToCount;
+        timeToChangeSpeed = 90;
     }
 
     private void Update()

@@ -11,6 +11,7 @@ using Unity.Netcode.Transports.UTP;
 
 public class LoginManagerScript : NetworkBehaviour
 {
+
     public string ipAddress = "127.0.0.1";
     public bool IsRealHost;
     public TMP_InputField joinCodeInputField;
@@ -179,6 +180,7 @@ public class LoginManagerScript : NetworkBehaviour
                 {
                     characterPrefabIndex = int.Parse(extractedString[i]);
                     Debug.Log("characterId client" + characterPrefabIndex);
+                    GameManager.Instance.character = characterPrefabIndex;
                     isApprove = true;
                 }
             }

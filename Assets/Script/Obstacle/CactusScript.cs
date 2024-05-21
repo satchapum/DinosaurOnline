@@ -38,7 +38,7 @@ public class CactusScript : NetworkBehaviour
                 DestroyObstacle();
             }
         }
-        if (IsClient)
+        /*if (IsClient)
         {
             if (collision.gameObject.tag == "Player")
             {
@@ -54,7 +54,7 @@ public class CactusScript : NetworkBehaviour
             {
                 DestroyObstacleServerRpc();
             }
-        }
+        }*/
 
     }
     private void DestroyObstacle()
