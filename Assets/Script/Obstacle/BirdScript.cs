@@ -12,9 +12,10 @@ public class BirdScript : NetworkBehaviour
 
     private void Start()
     {
+        characterNumber = GameObject.FindAnyObjectByType<HPPlayerScript>().characterNumber;
         playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
-        if (!IsOwner) return;
-        SpawnEffect();
+        obstacleSpawn = GameObject.FindAnyObjectByType<ObstacleSpawn>();
+        //SpawnEffect();
     }
 
     private void Update()
@@ -24,24 +25,47 @@ public class BirdScript : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!IsOwner) return;
-        if (collision.gameObject.tag == "Player")
+        if (IsHost)
         {
-            DestroyObstacleServerRpc();
+            if (collision.gameObject.tag == "Player")
+            {
+                DestroyObstacle();
+            }
+
+            if (collision.gameObject.tag == "DeleteZone")
+            {
+                DestroyObstacle();
+            }
+        }
+        if (IsClient)
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                DestroyObstacleServerRpc();
+
+            }
+
+            if (collision.gameObject.tag == "DeleteZone")
+            {
+                DestroyObstacleServerRpc();
+            }
         }
 
-        if (collision.gameObject.tag == "DeleteZone")
-        {
-            DestroyObstacleServerRpc();
-        }
     }
-    [ServerRpc]
+    private void DestroyObstacle()
+    {
+        ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
+        Debug.Log("destroy = : " + networkObjId);
+        obstacleSpawn.DestroyBirdServerRpc(networkObjId);
+    }
+    [ServerRpc(RequireOwnership = false)]
     private void DestroyObstacleServerRpc()
     {
-        if (!IsOwner) return;
         ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
-        obstacleSpawn.DestroyCactusServerRpc(networkObjId);
+        Debug.Log("destroy = : " + networkObjId);
+        obstacleSpawn.DestroyBirdServerRpc(networkObjId);
     }
+
 
     private void SpawnEffect()
     {

@@ -169,14 +169,31 @@ public class HPPlayerScript : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //if (!IsLocalPlayer) return;
-        Debug.Log(collision.gameObject.tag);
-        if (collision.gameObject.tag == "Cactus")
+        if (characterNumber == 0)
         {
-            hpDino.Value--;
+            if (collision.gameObject.tag == "Cactus")
+            {
+                hpDino.Value--;
+
+            }
+            if (collision.gameObject.tag == "Bullet")
+            {
+                hpDino.Value--;
+
+            }
         }
-        if (collision.gameObject.tag == "Bullet")
+        if (characterNumber == 1)
         {
-            hpDino.Value--;
+            if (collision.gameObject.tag == "Cactus")
+            {
+                hpDino.Value--;
+
+            }
+            if (collision.gameObject.tag == "Bullet")
+            {
+                hpDino.Value--;
+
+            }
         }
 
         UpdateScoreServerRpc();

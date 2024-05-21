@@ -16,11 +16,11 @@ public class ObstacleSpawn : NetworkBehaviour
     public GameObject pondPrefab;
 
     [Header("ListOfItem")]
-    private List<GameObject> spawnedBird = new List<GameObject>();
-    private List<GameObject> spawnedStone = new List<GameObject>();
-    private List<GameObject> spawnedCactus = new List<GameObject>();
-    private List<GameObject> spawnedPond = new List<GameObject>();
-    private List<GameObject> spawnedMeteor = new List<GameObject>();
+    public List<GameObject> spawnedBird = new List<GameObject>();
+    public List<GameObject> spawnedStone = new List<GameObject>();
+    public List<GameObject> spawnedCactus = new List<GameObject>();
+    public List<GameObject> spawnedPond = new List<GameObject>();
+    public List<GameObject> spawnedMeteor = new List<GameObject>();
 
     public Button skill_1;
     public Button skill_2;

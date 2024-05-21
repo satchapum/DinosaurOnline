@@ -11,9 +11,10 @@ public class CactusScript : NetworkBehaviour
     public float characterNumber;
     private void Start()
     {
+        characterNumber = GameObject.FindAnyObjectByType<HPPlayerScript>().characterNumber;
         playerControllerScript = gameObject.GetComponent<PlayerControllerScript>();
-        if (!IsOwner) return;
-        SpawnEffect();
+        obstacleSpawn = GameObject.FindAnyObjectByType<ObstacleSpawn>();
+        //SpawnEffect();
     }
 
     private void Update()
@@ -24,8 +25,7 @@ public class CactusScript : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {
 
-
-        if (characterNumber == 0)
+        if (IsHost)
         {
             if (collision.gameObject.tag == "Player")
             {
@@ -42,7 +42,7 @@ public class CactusScript : NetworkBehaviour
                 DestroyObstacle();
             }
         }
-        if (characterNumber == 1)
+        if (IsClient)
         {
             if (collision.gameObject.tag == "Player")
             {
@@ -67,7 +67,7 @@ public class CactusScript : NetworkBehaviour
         Debug.Log("destroy = : " + networkObjId);
         obstacleSpawn.DestroyCactusServerRpc(networkObjId);
     }
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void DestroyObstacleServerRpc()
     {
         ulong networkObjId = GetComponent<NetworkObject>().NetworkObjectId;
