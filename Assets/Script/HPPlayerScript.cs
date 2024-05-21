@@ -58,6 +58,25 @@ public class HPPlayerScript : NetworkBehaviour
                 ChangeColor(Color.white, Color.white, Color.white);
             }
         }
+        else
+        {
+            if (hpDino.Value == 3)
+            {
+                ChangeColor(Color.red, Color.red, Color.red);
+            }
+            else if (hpDino.Value == 2)
+            {
+                ChangeColor(Color.red, Color.red, Color.white);
+            }
+            else if (hpDino.Value == 1)
+            {
+                ChangeColor(Color.red, Color.white, Color.white);
+            }
+            else if (hpDino.Value == 0)
+            {
+                ChangeColor(Color.white, Color.white, Color.white);
+            }
+        }
     }
 
     private void ChangeColor(Color color_1, Color color_2, Color color_3)
@@ -74,14 +93,20 @@ public class HPPlayerScript : NetworkBehaviour
 
     }
 
-    public void UpdateScore()
+    [ServerRpc]
+    public void UpdateScoreServerRpc()
     {
-        if (hpDino.Value == 0 && IsOwnedByServer)
+        /*if (hpDino.Value == 0 && IsOwnedByServer)
         {
             ownerNetworkAnimationScript.SetTrigger("Die");
             loginManagerScript.Leave();
             //hpP1.Value = 5;
             //gameObject.GetComponent<PlayerSpawnerScript>().Respawn();
+        }*/
+        if (hpDino.Value == 0)
+        {
+            ownerNetworkAnimationScript.SetTrigger("Die");
+            loginManagerScript.Leave();
         }
     }
     private void OnTriggerEnter(Collider other)
@@ -106,24 +131,18 @@ public class HPPlayerScript : NetworkBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (!IsLocalPlayer) return;
+        //if (!IsLocalPlayer) return;
 
         if (collision.gameObject.tag == "Cactus")
         {
-            if (IsOwnedByServer)
-            {
-                hpDino.Value--;
-            }
+            hpDino.Value--;
         }
         if (collision.gameObject.tag == "Bullet")
         {
-            if (IsOwnedByServer)
-            {
-                hpDino.Value--;
-            }
+            hpDino.Value--;
         }
-        
-        UpdateScore();
+
+        UpdateScoreServerRpc();
 
     }
 }

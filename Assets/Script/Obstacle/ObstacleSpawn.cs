@@ -28,6 +28,14 @@ public class ObstacleSpawn : NetworkBehaviour
     public Button skill_4;
     public Button skill_5;
 
+    public float allSkillCooldown;
+
+    public float skillBirdCooldown;
+    public float skillCactusCooldown;
+    public float skillPondCooldown;
+    public float skillStoneCooldown;
+    public float skillMeteorCooldown; 
+
     [SerializeField] GameObject meteorTrans1;
     [SerializeField] GameObject meteorTrans2;
     [SerializeField] GameObject meteorTrans3;
@@ -64,75 +72,147 @@ public class ObstacleSpawn : NetworkBehaviour
     [ServerRpc]
     public void SpawnMeteoServerRpc()
     {
-        int randomNum = (int)Random.Range(1, 4);
-        Vector3 spawnPos;
-        if (randomNum == 1)
+        if (skillMeteorCooldown == 0)
         {
-            spawnPos = new Vector3(meteorTrans1.transform.position.x, meteorTrans1.transform.position.y, meteorTrans1.transform.position.z);
-        }
-        else if (randomNum == 2)
-        {
-            spawnPos = new Vector3(meteorTrans2.transform.position.x, meteorTrans2.transform.position.y, meteorTrans2.transform.position.z);
-        }
-        else
-        {
-            spawnPos = new Vector3(meteorTrans3.transform.position.x, meteorTrans3.transform.position.y, meteorTrans3.transform.position.z);
+            skillMeteorCooldown = allSkillCooldown;
+            StartCoroutine(SkillMeteoCooldown());
+            int randomNum = (int)Random.Range(1, 4);
+            Vector3 spawnPos;
+            if (randomNum == 1)
+            {
+                spawnPos = new Vector3(meteorTrans1.transform.position.x, meteorTrans1.transform.position.y, meteorTrans1.transform.position.z);
+            }
+            else if (randomNum == 2)
+            {
+                spawnPos = new Vector3(meteorTrans2.transform.position.x, meteorTrans2.transform.position.y, meteorTrans2.transform.position.z);
+            }
+            else
+            {
+                spawnPos = new Vector3(meteorTrans3.transform.position.x, meteorTrans3.transform.position.y, meteorTrans3.transform.position.z);
+            }
+
+            Quaternion spawnRot = transform.rotation;
+            GameObject meteor = Instantiate(meteorPrefab, spawnPos, spawnRot);
+            meteor.GetComponent<NetworkObject>().Spawn();
+            spawnedMeteor.Add(meteor);
+            meteor.GetComponent<MeteorScript>().obstacleSpawn = this;
+
         }
 
-        Quaternion spawnRot = transform.rotation;
-        GameObject meteor = Instantiate(meteorPrefab, spawnPos, spawnRot);
-        meteor.GetComponent<NetworkObject>().Spawn();
-        spawnedMeteor.Add(meteor);
-        meteor.GetComponent<MeteorScript>().obstacleSpawn = this;
-        
+    }
+
+    IEnumerator SkillMeteoCooldown()
+    {
+        for (int i = 0; i < allSkillCooldown; i++)
+        {
+            yield return new WaitForSeconds(allSkillCooldown);
+            skillMeteorCooldown -= 1;
+        }
+        yield return null;
     }
 
     [ServerRpc]
     public void SpawnStoneServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
-        Quaternion spawnRot = transform.rotation;
-        GameObject stone = Instantiate(stonePrefab, spawnPos, spawnRot);
-        stone.GetComponent<NetworkObject>().Spawn();
-        spawnedStone.Add(stone);
-        stone.GetComponent<StoneScript>().obstacleSpawn = this;
+        if (skillStoneCooldown == 0)
+        {
+            skillStoneCooldown = allSkillCooldown;
+            StartCoroutine(SkillStoneCooldown());
+            Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
+            Quaternion spawnRot = transform.rotation;
+            GameObject stone = Instantiate(stonePrefab, spawnPos, spawnRot);
+            stone.GetComponent<NetworkObject>().Spawn();
+            spawnedStone.Add(stone);
+            stone.GetComponent<StoneScript>().obstacleSpawn = this;
+        }
+    }
 
+    IEnumerator SkillStoneCooldown()
+    {
+        for (int i = 0; i < allSkillCooldown; i++)
+        {
+            yield return new WaitForSeconds(allSkillCooldown);
+            skillStoneCooldown -= 1;
+        }
+        yield return null;
     }
 
     [ServerRpc]
     public void SpawnPondServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 4, -2.29f, transform.position.z);
-        Quaternion spawnRot = transform.rotation;
-        GameObject pond = Instantiate(pondPrefab, spawnPos, spawnRot);
-        pond.GetComponent<NetworkObject>().Spawn();
-        spawnedPond.Add(pond);
-        pond.GetComponent<PondScript>().obstacleSpawn = this;
+        if (skillPondCooldown == 0)
+        {
+            skillPondCooldown = allSkillCooldown;
+            StartCoroutine(SkillPondCooldown());
+            Vector3 spawnPos = new Vector3(transform.position.x - 4, -2.29f, transform.position.z);
+            Quaternion spawnRot = transform.rotation;
+            GameObject pond = Instantiate(pondPrefab, spawnPos, spawnRot);
+            pond.GetComponent<NetworkObject>().Spawn();
+            spawnedPond.Add(pond);
+            pond.GetComponent<PondScript>().obstacleSpawn = this;
+        }
+    }
 
+    IEnumerator SkillPondCooldown()
+    {
+        for (int i = 0; i < allSkillCooldown; i++)
+        {
+            yield return new WaitForSeconds(allSkillCooldown);
+            skillPondCooldown -= 1;
+        }
+        yield return null;
     }
 
     [ServerRpc]
     public void SpawnCactusServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 8, transform.position.y+3, transform.position.z);
-        Quaternion spawnRot = transform.rotation;
-        GameObject cactus = Instantiate(cactusPrefab, spawnPos, spawnRot);
-        cactus.GetComponent<NetworkObject>().Spawn();
-        spawnedCactus.Add(cactus);
-        cactus.GetComponent<CactusScript>().obstacleSpawn = this;
-
+        if (skillCactusCooldown == 0)
+        {
+            skillCactusCooldown = allSkillCooldown;
+            StartCoroutine(SkillCactusCooldown());
+            Vector3 spawnPos = new Vector3(transform.position.x - 8, transform.position.y + 3, transform.position.z);
+            Quaternion spawnRot = transform.rotation;
+            GameObject cactus = Instantiate(cactusPrefab, spawnPos, spawnRot);
+            cactus.GetComponent<NetworkObject>().Spawn();
+            spawnedCactus.Add(cactus);
+            cactus.GetComponent<CactusScript>().obstacleSpawn = this;
+        }
     }
+    IEnumerator SkillCactusCooldown()
+    {
+        for (int i = 0; i < allSkillCooldown; i++)
+        {
+            yield return new WaitForSeconds(allSkillCooldown);
+            skillCactusCooldown -= 1;
+        }
+        yield return null;
+    }
+
 
     [ServerRpc]
     public void SpawnBirdServerRpc()
     {
-        Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
-        Quaternion spawnRot = transform.rotation;
-        GameObject bird = Instantiate(birdPrefab, spawnPos, spawnRot);
-        bird.GetComponent<NetworkObject>().Spawn();
-        spawnedBird.Add(bird);
-        bird.GetComponent<BirdScript>().obstacleSpawn = this;
+        if (skillBirdCooldown == 0)
+        {
+            skillBirdCooldown = allSkillCooldown;
+            StartCoroutine(SkillBirdCooldown());
+            Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
+            Quaternion spawnRot = transform.rotation;
+            GameObject bird = Instantiate(birdPrefab, spawnPos, spawnRot);
+            bird.GetComponent<NetworkObject>().Spawn();
+            spawnedBird.Add(bird);
+            bird.GetComponent<BirdScript>().obstacleSpawn = this;
+        }
+    }
 
+    IEnumerator SkillBirdCooldown()
+    {
+        for (int i = 0; i < allSkillCooldown; i++)
+        {
+            yield return new WaitForSeconds(allSkillCooldown);
+            skillBirdCooldown -= 1;
+        }
+        yield return null;
     }
 
     [ServerRpc(RequireOwnership = false)]
