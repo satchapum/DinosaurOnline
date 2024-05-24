@@ -97,7 +97,7 @@ public class PlayerControllerScript : NetworkBehaviour
     {
         if (isGrounded)
         {
-            animator.SetBool("Jump", true);
+            //animator.SetBool("Jump", true);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }

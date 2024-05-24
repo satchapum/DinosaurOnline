@@ -34,7 +34,7 @@ public class StoneScript : NetworkBehaviour
                 DestroyObstacle();
             }
         }
-        if (IsClient)
+        else if (IsClient)
         {
             if (collision.gameObject.tag == "Player")
             {

@@ -197,7 +197,7 @@ public class ObstacleSpawn : NetworkBehaviour
         {
             skillBirdCooldown = allSkillCooldown;
             StartCoroutine(SkillBirdCooldown());
-            Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
+            Vector3 spawnPos = new Vector3(transform.position.x - 4, 16.5f, transform.position.z);
             Quaternion spawnRot = transform.rotation;
             GameObject bird = Instantiate(birdPrefab, spawnPos, spawnRot);
             bird.GetComponent<NetworkObject>().Spawn();

@@ -26,22 +26,14 @@ public class PondScript : NetworkBehaviour
     {
         if (IsHost)
         {
-            if (collision.gameObject.tag == "Player")
-            {
-                DestroyObstacle();
-            }
 
             if (collision.gameObject.tag == "DeleteZone")
             {
                 DestroyObstacle();
             }
         }
-        if (IsClient)
+        else if(IsClient)
         {
-            if (collision.gameObject.tag == "Player")
-            {
-                DestroyObstacleServerRpc();
-            }
 
             if (collision.gameObject.tag == "DeleteZone")
             {

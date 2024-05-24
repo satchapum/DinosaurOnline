@@ -18,16 +18,9 @@ public class MainPlayerScript : NetworkBehaviour
     private NetworkVariable<int> posX = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     private Button changeStatusButton;
-    public NetworkVariable<bool> isRedMat = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    //public NetworkVariable<bool> isRedMat = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     //ใช้ตอนเปลี่ยนสีโดนยิง
-    public void ChangeMatColor()
-    {
-        if (IsOwner)
-        {
-            isRedMat.Value = !isRedMat.Value;
-        }
-    }
 
     public struct NetworkString : INetworkSerializable
     {
@@ -84,7 +77,7 @@ public class MainPlayerScript : NetworkBehaviour
 
     private void Update()
     {
-        Vector3 nameLabelPos = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 3.5f, 0));
+        Vector3 nameLabelPos = Camera.main.WorldToScreenPoint(transform.position + new Vector3(0, 13f, 0));
         nameLabel.text = gameObject.name;
         nameLabel.transform.position = nameLabelPos;
         if (IsOwner)
@@ -102,7 +95,6 @@ public class MainPlayerScript : NetworkBehaviour
             }
         }
         UpdatePlayerInfo();
-        UpdatePlayerStatus();
     }
 
     [ClientRpc]
@@ -121,36 +113,6 @@ public class MainPlayerScript : NetworkBehaviour
     {
         if (IsOwnedByServer) { nameLabel.text = playerNameA.Value.ToString(); }
         else { nameLabel.text = playerNameB.Value.ToString(); }
-    }
-
-    private void UpdatePlayerStatus()
-    {
-        loginManagerScript = GameObject.FindAnyObjectByType<LoginManagerScript>();
-        if (IsOwnedByServer) 
-        {
-            if (OwnerClientId == 0)
-            {
-                if (isRedMat.Value)
-                {
-                    gameObject.GetComponentInChildren<Renderer>().material = loginManagerScript.materialList[1];
-                }
-                else
-                {
-                    gameObject.GetComponentInChildren<Renderer>().material = loginManagerScript.materialList[0];
-                }
-            }
-        }
-        else 
-        {
-            if (isRedMat.Value)
-            {
-                gameObject.GetComponentInChildren<Renderer>().material = loginManagerScript.materialList[1];
-            }
-            else
-            {
-                gameObject.GetComponentInChildren<Renderer>().material = loginManagerScript.materialList[0];
-            }
-        }
     }
 
     private void OnDestroy()
