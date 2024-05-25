@@ -109,7 +109,7 @@ public class ObstacleSpawn : NetworkBehaviour
         {
             skillStoneCooldown = allSkillCooldown;
             StartCoroutine(SkillStoneCooldown());
-            Vector3 spawnPos = new Vector3(transform.position.x - 4, transform.position.y, transform.position.z);
+            Vector3 spawnPos = new Vector3(transform.position.x - 8, 0.1f, transform.position.z);
             Quaternion spawnRot = transform.rotation;
             GameObject stone = Instantiate(stonePrefab, spawnPos, spawnRot);
             stone.GetComponent<NetworkObject>().Spawn();

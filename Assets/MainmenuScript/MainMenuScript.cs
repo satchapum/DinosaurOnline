@@ -17,6 +17,6 @@ public class MainMenuScript : MonoBehaviour
 
     public void BackToMaimenuButtonPressed()
     {
-        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("StartScene", LoadSceneMode.Single);
     }
 }

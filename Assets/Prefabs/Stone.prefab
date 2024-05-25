@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 7818172782014043259}
   - component: {fileID: 268919644241638062}
   - component: {fileID: 4253956347980583372}
-  - component: {fileID: 733566226654633507}
-  - component: {fileID: 5138126390506489478}
+  - component: {fileID: 274000350277322891}
+  - component: {fileID: -2159812404002038233}
   m_Layer: 0
   m_Name: Stone
   m_TagString: Bullet
@@ -65,7 +65,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7558019836842281974}
-  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: -4265535600650464334, guid: 65ae9f850af9ac54e8514bdb6072c3f0, type: 3}
 --- !u!23 &268919644241638062
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -86,7 +86,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 39a98b7e5dfcc014ab4b7ce6fc7759d6, type: 2}
+  - {fileID: 2100000, guid: 4cc6899399e7f3f4a946350f1affc676, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!136 &733566226654633507
+--- !u!136 &274000350277322891
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,11 +158,11 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5000002
-  m_Height: 1.0000004
+  m_Radius: 2.6481192
+  m_Height: 3.979874
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5138126390506489478
+  m_Center: {x: -0.3295295, y: 2.0101166, z: 0.018812418}
+--- !u!114 &-2159812404002038233
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
